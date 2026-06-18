@@ -1,6 +1,6 @@
 ---
 title: Base Layout, Navigation, and Cyber-Kawaii Theme Setup
-status: in_progress
+status: done
 priority: urgent
 type: chore
 tags:
@@ -20,8 +20,8 @@ Set up the global application shell, the dark-mode-first cyber-kawaii design sys
 - [x] Import and apply `Quicksand` (headings) and `Nunito` (body) via Next.js Font optimization.
 - [x] Create a persistent global navigation layout (sidebar on desktop, bottom bar on mobile) linking to exactly: Home, Planner, Calendar, Meals, Chores, Rooms, Deep Clean, Declutter, Birthdays, Stats, and Settings.
 - [x] Implement cute thematic icons from Lucide React (e.g., Sparkles, PawPrint, Moon, Stars) for the navigation items.
-- [ ] Build a reusable, highly rounded (`rounded-3xl`) Card component with subtle pink/purple hover glows.
-- [ ] Build reusable UI primitives for visual progress tracking: cute Progress Bars and circular Progress Rings.
+- [x] Build a reusable, highly rounded (`rounded-3xl`) Card component with subtle pink/purple hover glows.
+- [x] Build reusable UI primitives for visual progress tracking: cute Progress Bars and circular Progress Rings.
 
 ## Acceptance
 - The app strictly defaults to dark mode with deep charcoal and pink/purple glows.
