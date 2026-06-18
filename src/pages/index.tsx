@@ -1,7 +1,7 @@
 import { ThemedCard, ThemedCardHeader, ThemedCardTitle, ThemedCardDescription, ThemedCardContent } from "@/components/ui/themed-card";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { Progress } from "@/components/ui/progress";
-import { Sparkles, Calendar, Utensils, Broom } from "lucide-react";
+import { Sparkles, Calendar, Utensils, Wand2 } from "lucide-react";
 
 export default function Home() {
   return (
@@ -62,7 +62,7 @@ export default function Home() {
         <ThemedCard variant="glow">
           <ThemedCardHeader>
             <div className="flex items-center gap-3">
-              <Broom className="w-6 h-6 text-secondary-foreground" />
+              <Wand2 className="w-6 h-6 text-secondary-foreground" />
               <ThemedCardTitle>Chaos Cleaner</ThemedCardTitle>
             </div>
             <ThemedCardDescription>
