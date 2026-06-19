@@ -1,6 +1,6 @@
 ---
 title: Chaos Cleaner Integration (Rooms & Resets)
-status: todo
+status: in_progress
 priority: high
 type: feature
 tags:
@@ -18,11 +18,11 @@ Integrating the user's "Chaos Cleaner" concept. This replaces standard chores wi
 ## Checklist
 - [x] Build the Cleaning Dashboard showing: Today's progress, # of daily tasks complete, % complete, current streak, tasks due today.
 - [x] Create exactly 11 Room Cards: Kitchen, Lounge Room, Dining Room, Master Bedroom, Master Bathroom, Guest Bathroom, Guest Toilet, Spare Toilet, Laundry, Activity Room, Entry Way.
-- [ ] Implement the room detail view showing a task list divided into: Daily, Weekly, Monthly, and Deep Clean tasks with a room-specific progress percentage.
-- [ ] Build the chore creation system allowing task name, room, frequency, due date, notes, priority, and recurring schedules.
+- [x] Implement the room detail view showing a task list divided into: Daily, Weekly, Monthly, and Deep Clean tasks with a room-specific progress percentage.
+- [x] Build the chore creation system allowing task name, room, frequency, due date, notes, priority, and recurring schedules.
 - [x] Build "Daily Reset" mode: Shows only daily tasks due today grouped by room, allowing rapid check-offs, updating streaks, and displaying a "daily reset complete" success state.
-- [ ] Build "Weekly Reset" mode: Shows all weekly tasks grouped by room, tracking weekly progress.
-- [ ] Implement logic to automatically reset daily/weekly tasks based on their frequency.
+- [x] Build "Weekly Reset" mode: Shows all weekly tasks grouped by room, tracking weekly progress.
+- [x] Implement logic to automatically reset daily/weekly tasks based on their frequency.
 
 ## Acceptance
 - All 11 specific rooms exist by default and have their own task lists.
