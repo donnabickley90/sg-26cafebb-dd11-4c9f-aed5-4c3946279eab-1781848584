@@ -71,6 +71,16 @@ export interface ChoreData {
   nextDue?: string;
 }
 
+export interface DeepCleanTask {
+  id: string;
+  task: string;
+  room: string;
+  scheduledDate?: string; // YYYY-MM-DD, undefined if unscheduled
+  completed: boolean;
+  completedDate?: string;
+  notes?: string;
+}
+
 // Daily Planner Storage
 export const saveDailyPlan = (data: DailyPlannerData): void => {
   localStorage.setItem(`daily_${data.date}`, JSON.stringify(data));
@@ -218,6 +228,87 @@ export const getChores = (): ChoreData[] => {
 export const getChoresForDate = (date: string): ChoreData[] => {
   const allChores = getChores();
   return allChores.filter((c) => c.nextDue === date);
+};
+
+// Deep Clean Tasks Storage
+export const saveDeepCleanTasks = (tasks: DeepCleanTask[]): void => {
+  localStorage.setItem("deep_clean_tasks", JSON.stringify(tasks));
+};
+
+export const getDeepCleanTasks = (): DeepCleanTask[] => {
+  const stored = localStorage.getItem("deep_clean_tasks");
+  if (!stored) {
+    // Initialize with default tasks
+    const defaultTasks: DeepCleanTask[] = [
+      { id: crypto.randomUUID(), task: "Clean oven", room: "Kitchen", completed: false },
+      { id: crypto.randomUUID(), task: "Wash curtains", room: "Living Room", completed: false },
+      { id: crypto.randomUUID(), task: "Rotate mattress", room: "Bedroom", completed: false },
+      { id: crypto.randomUUID(), task: "Scrub grout", room: "Bathroom", completed: false },
+      { id: crypto.randomUUID(), task: "Clean exhaust fan", room: "Kitchen", completed: false },
+      { id: crypto.randomUUID(), task: "Deep clean refrigerator", room: "Kitchen", completed: false },
+      { id: crypto.randomUUID(), task: "Organize closet", room: "Bedroom", completed: false },
+      { id: crypto.randomUUID(), task: "Clean windows inside & out", room: "Living Room", completed: false },
+      { id: crypto.randomUUID(), task: "Descale kettle & coffee maker", room: "Kitchen", completed: false },
+      { id: crypto.randomUUID(), task: "Vacuum under furniture", room: "Living Room", completed: false },
+    ];
+    saveDeepCleanTasks(defaultTasks);
+    return defaultTasks;
+  }
+  return JSON.parse(stored);
+};
+
+export const getUnscheduledDeepCleanTasks = (): DeepCleanTask[] => {
+  return getDeepCleanTasks().filter(task => !task.scheduledDate && !task.completed);
+};
+
+export const getScheduledDeepCleanTasks = (): DeepCleanTask[] => {
+  return getDeepCleanTasks().filter(task => task.scheduledDate && !task.completed);
+};
+
+export const getDeepCleanTasksForDate = (date: string): DeepCleanTask[] => {
+  return getDeepCleanTasks().filter(task => task.scheduledDate === date && !task.completed);
+};
+
+export const getOverdueDeepCleanTasks = (): DeepCleanTask[] => {
+  const today = new Date().toISOString().split("T")[0];
+  return getDeepCleanTasks().filter(
+    task => task.scheduledDate && task.scheduledDate < today && !task.completed
+  );
+};
+
+export const scheduleDeepCleanTask = (taskId: string, date: string): void => {
+  const tasks = getDeepCleanTasks();
+  const task = tasks.find(t => t.id === taskId);
+  if (task) {
+    task.scheduledDate = date;
+    saveDeepCleanTasks(tasks);
+  }
+};
+
+export const completeDeepCleanTask = (taskId: string): void => {
+  const tasks = getDeepCleanTasks();
+  const task = tasks.find(t => t.id === taskId);
+  if (task) {
+    task.completed = true;
+    task.completedDate = new Date().toISOString().split("T")[0];
+    saveDeepCleanTasks(tasks);
+  }
+};
+
+export const addDeepCleanTask = (task: string, room: string): void => {
+  const tasks = getDeepCleanTasks();
+  tasks.push({
+    id: crypto.randomUUID(),
+    task,
+    room,
+    completed: false,
+  });
+  saveDeepCleanTasks(tasks);
+};
+
+export const deleteDeepCleanTask = (taskId: string): void => {
+  const tasks = getDeepCleanTasks().filter(t => t.id !== taskId);
+  saveDeepCleanTasks(tasks);
 };
 
 // Calendar indicators - check if a date has events
