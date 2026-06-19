@@ -23,7 +23,7 @@ import {
   CalendarDays,
   Home as HomeIcon
 } from "lucide-react";
-import { getTodaysMealsFromWeekly, getDeepCleanTasksForDate, completeDeepCleanTask, getDeclutterProgress, getCurrentDeclutterDay, type DeepCleanTask } from "@/lib/storage";
+import { getTodaysMealsFromWeekly, getDeepCleanTasksForDate, completeDeepCleanTask, getDeclutterProgress, getCurrentDeclutterDay, getUpcomingImportantDates, type DeepCleanTask } from "@/lib/storage";
 import Link from "next/link";
 
 export default function Home() {
@@ -34,6 +34,7 @@ export default function Home() {
   const [deepCleanTasksToday, setDeepCleanTasksToday] = useState<DeepCleanTask[]>([]);
   const [declutterProgress, setDeclutterProgress] = useState({ completedDays: 0, totalDays: 30, completedItems: 0, totalItems: 465, percentage: 0 });
   const [declutterCurrentDay, setDeclutterCurrentDay] = useState<number | null>(null);
+  const [upcomingBirthdays, setUpcomingBirthdays] = useState<Array<{ name: string; date: string; daysUntil: number; category: string }>>([]);
 
   // Mock data for demonstration
   const today = new Date();
@@ -54,6 +55,35 @@ export default function Home() {
     
     const currentDay = getCurrentDeclutterDay();
     setDeclutterCurrentDay(currentDay);
+
+    // Load upcoming birthdays
+    const upcomingDates = getUpcomingImportantDates(30);
+    const birthdaysData = upcomingDates.map(date => {
+      const [month, day] = date.date.split("-");
+      const displayDate = new Date(2026, parseInt(month) - 1, parseInt(day)).toLocaleDateString("en-US", { 
+        month: "short", 
+        day: "numeric" 
+      });
+      
+      // Calculate days until
+      const currentYear = today.getFullYear();
+      const thisYearDate = new Date(currentYear, parseInt(month) - 1, parseInt(day));
+      let diffTime = thisYearDate.getTime() - today.getTime();
+      let daysUntil = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (daysUntil < 0) {
+        const nextYearDate = new Date(currentYear + 1, parseInt(month) - 1, parseInt(day));
+        daysUntil = Math.ceil((nextYearDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      }
+      
+      return {
+        name: date.name,
+        date: displayDate,
+        daysUntil,
+        category: date.category,
+      };
+    });
+    setUpcomingBirthdays(birthdaysData);
   }, [todayStr]);
 
   const handleCompleteDeepClean = (taskId: string) => {
@@ -72,11 +102,6 @@ export default function Home() {
     { room: "Kitchen", task: "Wipe counters", done: true },
     { room: "Bedroom", task: "Make bed", done: true },
     { room: "Bathroom", task: "Quick clean", done: false },
-  ];
-
-  const upcomingBirthdays = [
-    { name: "Alex", date: "June 25", gift: "Book" },
-    { name: "Sam", date: "July 2", gift: "Not decided" },
   ];
 
   const priorities = [
@@ -403,17 +428,44 @@ export default function Home() {
             <ThemedCardDescription>Don't forget to celebrate!</ThemedCardDescription>
           </ThemedCardHeader>
           <ThemedCardContent>
-            <div className="space-y-2">
-              {upcomingBirthdays.map((birthday, idx) => (
-                <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
-                  <div>
-                    <p className="text-sm font-medium">{birthday.name}</p>
-                    <p className="text-xs text-muted-foreground">{birthday.date}</p>
+            {upcomingBirthdays.length === 0 ? (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground text-sm">No upcoming birthdays or dates in the next 30 days</p>
+                <Link href="/birthdays">
+                  <Button variant="outline" size="sm" className="mt-2">
+                    Add Birthdays
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {upcomingBirthdays.slice(0, 3).map((birthday, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
+                    <div className="flex items-center gap-2">
+                      {birthday.category === "birthday" && <Cake className="w-4 h-4 text-primary" />}
+                      {birthday.category === "anniversary" && <Heart className="w-4 h-4 text-accent" />}
+                      {birthday.category === "holiday" && <Sparkles className="w-4 h-4 text-secondary" />}
+                      <div>
+                        <p className="text-sm font-medium">{birthday.name}</p>
+                        <p className="text-xs text-muted-foreground">{birthday.date}</p>
+                      </div>
+                    </div>
+                    <Badge variant="outline">
+                      {birthday.daysUntil === 0 ? "Today!" : 
+                       birthday.daysUntil === 1 ? "Tomorrow" : 
+                       `${birthday.daysUntil} days`}
+                    </Badge>
                   </div>
-                  <Badge variant="outline">Gift: {birthday.gift}</Badge>
-                </div>
-              ))}
-            </div>
+                ))}
+                {upcomingBirthdays.length > 3 && (
+                  <Link href="/birthdays">
+                    <Button variant="outline" size="sm" className="w-full mt-2">
+                      View All ({upcomingBirthdays.length})
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            )}
           </ThemedCardContent>
         </ThemedCard>
 
@@ -427,22 +479,30 @@ export default function Home() {
             <ThemedCardDescription>Anniversaries & special events</ThemedCardDescription>
           </ThemedCardHeader>
           <ThemedCardContent>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
-                <div>
-                  <p className="text-sm font-medium">Wedding Anniversary</p>
-                  <p className="text-xs text-muted-foreground">August 15</p>
-                </div>
-                <Badge variant="secondary">57 days</Badge>
+            {upcomingBirthdays.filter(b => b.category === "anniversary").length === 0 ? (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground text-sm">No upcoming anniversaries</p>
+                <Link href="/birthdays">
+                  <Button variant="outline" size="sm" className="mt-2">
+                    Add Anniversaries
+                  </Button>
+                </Link>
               </div>
-              <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
-                <div>
-                  <p className="text-sm font-medium">Work Anniversary</p>
-                  <p className="text-xs text-muted-foreground">September 1</p>
-                </div>
-                <Badge variant="secondary">74 days</Badge>
+            ) : (
+              <div className="space-y-2">
+                {upcomingBirthdays.filter(b => b.category === "anniversary").slice(0, 2).map((date, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
+                    <div>
+                      <p className="text-sm font-medium">{date.name}</p>
+                      <p className="text-xs text-muted-foreground">{date.date}</p>
+                    </div>
+                    <Badge variant="secondary">
+                      {date.daysUntil === 0 ? "Today!" : `${date.daysUntil} days`}
+                    </Badge>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
           </ThemedCardContent>
         </ThemedCard>
       </div>
