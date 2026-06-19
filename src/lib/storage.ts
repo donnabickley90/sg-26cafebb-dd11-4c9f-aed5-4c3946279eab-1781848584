@@ -817,8 +817,8 @@ export const getDaysUntilDate = (dateStr: string, year?: number): number => {
   
   // Check this year
   const thisYearDate = new Date(currentYear, month - 1, day);
-  let diffTime = thisYearDate.getTime() - today.getTime();
-  let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const diffTime = thisYearDate.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   
   if (diffDays >= 0) return diffDays;
   

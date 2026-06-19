@@ -5,7 +5,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getDateIndicators } from "@/lib/storage";
+import { getDateIndicators, getImportantDatesForDate } from "@/lib/storage";
 import Link from "next/link";
 
 export default function CalendarPage() {
@@ -94,10 +94,12 @@ export default function CalendarPage() {
 
   const DayIndicators = ({ date }: { date: Date }) => {
     const indicators = getDateIndicators(formatDate(date));
+    const importantDates = getImportantDatesForDate(formatDate(date));
+    
     return (
-      <div className="flex gap-1 justify-center mt-1">
-        {indicators.hasBirthday && (
-          <div className="w-1.5 h-1.5 rounded-full bg-primary" title="Birthday" />
+      <div className="flex gap-1 justify-center mt-1 flex-wrap">
+        {importantDates.length > 0 && (
+          <div className="w-1.5 h-1.5 rounded-full bg-primary" title={`${importantDates.length} important date(s)`} />
         )}
         {indicators.hasMeal && (
           <div className="w-1.5 h-1.5 rounded-full bg-accent" title="Meal planned" />

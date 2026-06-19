@@ -25,7 +25,7 @@ import {
   saveDailyPlan,
   getTodaysMealsFromWeekly,
   getChoresForDate,
-  getBirthdaysForDate,
+  getImportantDatesForDate,
   type DailyPlannerData,
 } from "@/lib/storage";
 import Link from "next/link";
@@ -123,7 +123,7 @@ export default function DailyPlannerPage() {
 
   const mealsData = getTodaysMealsFromWeekly(dateStr);
   const choresData = getChoresForDate(dateStr);
-  const birthdaysData = getBirthdaysForDate(dateStr);
+  const importantDates = getImportantDatesForDate(dateStr);
 
   const moods = [
     { emoji: "😄", label: "Great" },
@@ -245,18 +245,29 @@ export default function DailyPlannerPage() {
             </Card>
 
             {/* Cross-Module Widgets */}
-            {birthdaysData.length > 0 && (
+            {importantDates.length > 0 && (
               <Card className="p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <SparklesIcon className="h-5 w-5 text-primary" />
-                  <h2 className="text-xl font-bold">Birthdays Today</h2>
+                  <h2 className="text-xl font-bold">Important Dates Today</h2>
                 </div>
                 <div className="space-y-2">
-                  {birthdaysData.map((birthday) => (
-                    <div key={birthday.id} className="text-sm">
-                      🎉 <span className="font-semibold">{birthday.name}</span>
+                  {importantDates.map((date) => (
+                    <div key={date.id} className="flex items-center gap-2 text-sm">
+                      {date.category === "birthday" && <span>🎂</span>}
+                      {date.category === "anniversary" && <span>💕</span>}
+                      {date.category === "holiday" && <span>🎉</span>}
+                      <span className="font-semibold">{date.name}</span>
+                      {date.relationship && (
+                        <span className="text-muted-foreground">({date.relationship})</span>
+                      )}
                     </div>
                   ))}
+                  <Link href="/birthdays">
+                    <Button variant="outline" size="sm" className="mt-2 w-full">
+                      Manage Dates
+                    </Button>
+                  </Link>
                 </div>
               </Card>
             )}

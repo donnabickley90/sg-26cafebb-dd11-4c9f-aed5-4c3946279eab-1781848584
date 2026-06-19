@@ -68,7 +68,7 @@ export default function Home() {
       // Calculate days until
       const currentYear = today.getFullYear();
       const thisYearDate = new Date(currentYear, parseInt(month) - 1, parseInt(day));
-      let diffTime = thisYearDate.getTime() - today.getTime();
+      const diffTime = thisYearDate.getTime() - today.getTime();
       let daysUntil = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       
       if (daysUntil < 0) {
