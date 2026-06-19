@@ -23,7 +23,7 @@ import {
   CalendarDays,
   Home as HomeIcon
 } from "lucide-react";
-import { getTodaysMealsFromWeekly } from "@/lib/storage";
+import { getTodaysMealsFromWeekly, getDeepCleanTasksForDate, completeDeepCleanTask, type DeepCleanTask } from "@/lib/storage";
 import Link from "next/link";
 
 export default function Home() {
@@ -31,6 +31,7 @@ export default function Home() {
   const [mood, setMood] = useState<string | null>(null);
   const [spoons, setSpoons] = useState(3);
   const [todaysMeals, setTodaysMeals] = useState<{ breakfast: string; lunch: string; dinner: string; snacks: string; drinks: string } | null>(null);
+  const [deepCleanTasksToday, setDeepCleanTasksToday] = useState<DeepCleanTask[]>([]);
 
   // Mock data for demonstration
   const today = new Date();
@@ -38,11 +39,19 @@ export default function Home() {
   const dayName = today.toLocaleDateString("en-US", { weekday: "long" });
   const dateString = today.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
-  // Load today's meals on mount
+  // Load today's meals and deep clean tasks on mount
   useEffect(() => {
     const meals = getTodaysMealsFromWeekly(todayStr);
     setTodaysMeals(meals);
+    
+    const deepCleanTasks = getDeepCleanTasksForDate(todayStr);
+    setDeepCleanTasksToday(deepCleanTasks);
   }, [todayStr]);
+
+  const handleCompleteDeepClean = (taskId: string) => {
+    completeDeepCleanTask(taskId);
+    setDeepCleanTasksToday(getDeepCleanTasksForDate(todayStr));
+  };
 
   const upcomingHours = [
     { time: "9:00 AM", task: "Morning routine & coffee", status: "done" },
@@ -55,11 +64,6 @@ export default function Home() {
     { room: "Kitchen", task: "Wipe counters", done: true },
     { room: "Bedroom", task: "Make bed", done: true },
     { room: "Bathroom", task: "Quick clean", done: false },
-  ];
-
-  const deepCleanTasks = [
-    { task: "Deep clean refrigerator", dueDate: "Today" },
-    { task: "Organize closet", dueDate: "Tomorrow" },
   ];
 
   const upcomingBirthdays = [
@@ -307,12 +311,32 @@ export default function Home() {
           </ThemedCardHeader>
           <ThemedCardContent>
             <div className="space-y-2">
-              {deepCleanTasks.map((task, idx) => (
-                <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
-                  <span className="text-sm">{task.task}</span>
-                  <Badge variant="secondary">{task.dueDate}</Badge>
+              {deepCleanTasksToday.length === 0 ? (
+                <div className="text-center py-4">
+                  <p className="text-muted-foreground text-sm">No deep clean tasks scheduled for today</p>
+                  <Link href="/deep-clean">
+                    <Button variant="outline" size="sm" className="mt-2">
+                      Schedule Tasks
+                    </Button>
+                  </Link>
                 </div>
-              ))}
+              ) : (
+                deepCleanTasksToday.map((task) => (
+                  <div key={task.id} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{task.task}</p>
+                      <p className="text-xs text-muted-foreground">{task.room}</p>
+                    </div>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => handleCompleteDeepClean(task.id)}
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-primary" />
+                    </Button>
+                  </div>
+                ))
+              )}
             </div>
           </ThemedCardContent>
         </ThemedCard>

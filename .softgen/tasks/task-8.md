@@ -1,6 +1,6 @@
 ---
 title: Deep Clean Calendar
-status: todo
+status: done
 priority: medium
 type: feature
 tags:
