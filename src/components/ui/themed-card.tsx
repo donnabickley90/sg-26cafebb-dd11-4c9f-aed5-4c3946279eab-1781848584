@@ -28,7 +28,7 @@ const ThemedCardHeader = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("flex flex-col space-y-1.5 p-6", className)}
+      className={cn("flex flex-col space-y-1 sm:space-y-1.5 p-3 sm:p-6", className)}
       {...props}
     />
   )
@@ -40,7 +40,7 @@ const ThemedCardTitle = forwardRef<HTMLParagraphElement, React.HTMLAttributes<HT
     <h3
       ref={ref}
       className={cn(
-        "font-heading text-2xl font-semibold leading-none tracking-tight",
+        "font-heading text-base sm:text-2xl font-semibold leading-none tracking-tight",
         className
       )}
       {...props}
@@ -53,7 +53,7 @@ const ThemedCardDescription = forwardRef<HTMLParagraphElement, React.HTMLAttribu
   ({ className, ...props }, ref) => (
     <p
       ref={ref}
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-xs sm:text-sm text-muted-foreground", className)}
       {...props}
     />
   )
@@ -62,7 +62,7 @@ ThemedCardDescription.displayName = "ThemedCardDescription";
 
 const ThemedCardContent = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+    <div ref={ref} className={cn("p-3 sm:p-6 pt-0", className)} {...props} />
   )
 );
 ThemedCardContent.displayName = "ThemedCardContent";
@@ -71,7 +71,7 @@ const ThemedCardFooter = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("flex items-center p-6 pt-0", className)}
+      className={cn("flex items-center p-3 sm:p-6 pt-0", className)}
       {...props}
     />
   )

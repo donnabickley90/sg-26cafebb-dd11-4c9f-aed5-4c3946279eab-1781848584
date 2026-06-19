@@ -559,14 +559,14 @@ export default function Home() {
         })}
         
         {/* Two-column grid section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6">
           {widgetOrder
             .filter(key => ["schedule", "meals", "birthdays", "dates"].includes(key))
             .map(key => widgetComponents[key])}
         </div>
         
         {/* Three-column grid section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6">
           {widgetOrder
             .filter(key => ["priorities", "mood", "notes"].includes(key))
             .map(key => widgetComponents[key])}
