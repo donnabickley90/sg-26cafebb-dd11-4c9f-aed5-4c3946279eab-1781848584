@@ -92,8 +92,8 @@ export function Layout({ children }: LayoutProps) {
 
         {/* Mobile Top Bar */}
         <div className="lg:hidden sticky top-0 z-40 bg-sidebar/95 backdrop-blur-sm border-b border-sidebar-border">
-          <div className="flex items-center justify-between px-4 py-3">
-            <h1 className="font-heading font-bold text-lg text-primary">
+          <div className="flex items-center justify-between px-3 py-2">
+            <h1 className="font-heading font-bold text-base text-primary">
               Chaos Planner
             </h1>
             <ThemeSwitch />
@@ -101,15 +101,15 @@ export function Layout({ children }: LayoutProps) {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 lg:ml-64 pb-20 lg:pb-8">
-          <div className="container py-8">
+        <main className="flex-1 lg:ml-64 pb-16 lg:pb-8">
+          <div className="container py-4 sm:py-6 lg:py-8">
             {children}
           </div>
         </main>
 
         {/* Mobile Bottom Navigation */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-sidebar border-t border-sidebar-border z-50">
-          <div className="flex items-center justify-around px-2 py-3">
+          <div className="flex items-center justify-around px-1 py-2">
             {navItems.slice(0, 5).map((item) => {
               const Icon = item.icon;
               const isActive = 
@@ -124,14 +124,14 @@ export function Layout({ children }: LayoutProps) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex flex-col items-center gap-1 px-3 py-2 rounded-2xl transition-all duration-200",
+                    "flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl transition-all duration-200",
                     isActive
-                      ? "text-primary bg-primary/10 scale-110 font-semibold"
+                      ? "text-primary bg-primary/10 scale-105 font-semibold"
                       : "text-sidebar-foreground hover:text-primary"
                   )}
                 >
-                  <Icon className={cn("w-5 h-5", isActive && "drop-shadow-glow")} />
-                  <span className="text-xs font-medium">{item.label}</span>
+                  <Icon className={cn("w-4 h-4", isActive && "drop-shadow-glow")} />
+                  <span className="text-[10px] font-medium">{item.label}</span>
                 </Link>
               );
             })}
