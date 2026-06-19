@@ -1,0 +1,49 @@
+{
+  "name": "Chaos Planner",
+  "short_name": "Chaos Planner",
+  "description": "Your private, local-first digital planner for managing daily schedules, meals, cleaning, and life chaos",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0D0A14",
+  "theme_color": "#E879F9",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "lifestyle", "utilities"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Today's Planner",
+      "short_name": "Planner",
+      "description": "Open today's daily planner",
+      "url": "/daily/" + new Date().toISOString().split('T')[0],
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Cleaning Tasks",
+      "short_name": "Cleaning",
+      "description": "View cleaning tasks",
+      "url": "/cleaning",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Meals",
+      "short_name": "Meals",
+      "description": "Plan your meals",
+      "url": "/meals",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
