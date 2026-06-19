@@ -119,22 +119,22 @@ export default function CalendarPage() {
     const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-2 sm:space-y-4">
         <div className="flex items-center justify-between">
-          <Button variant="ghost" size="icon" onClick={prevMonth}>
-            <ChevronLeft className="h-5 w-5" />
+          <Button variant="ghost" size="icon" onClick={prevMonth} className="h-8 w-8 sm:h-10 sm:w-10">
+            <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
-          <h2 className="text-2xl font-bold">
+          <h2 className="text-base sm:text-2xl font-bold">
             {currentMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
           </h2>
-          <Button variant="ghost" size="icon" onClick={nextMonth}>
-            <ChevronRight className="h-5 w-5" />
+          <Button variant="ghost" size="icon" onClick={nextMonth} className="h-8 w-8 sm:h-10 sm:w-10">
+            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
         </div>
 
-        <div className="grid grid-cols-7 gap-2">
+        <div className="grid grid-cols-7 gap-1 sm:gap-2">
           {weekDays.map((day) => (
-            <div key={day} className="text-center font-semibold text-sm text-muted-foreground py-2">
+            <div key={day} className="text-center font-semibold text-[10px] sm:text-sm text-muted-foreground py-1 sm:py-2">
               {day}
             </div>
           ))}
@@ -143,11 +143,11 @@ export default function CalendarPage() {
             return (
               <Link key={i} href={`/daily/${dateStr}`}>
                 <Card
-                  className={`p-3 text-center cursor-pointer transition-all hover:border-primary hover:shadow-lg hover:shadow-primary/20 ${
+                  className={`p-1 sm:p-3 text-center cursor-pointer transition-all hover:border-primary hover:shadow-lg hover:shadow-primary/20 ${
                     !isCurrentMonth(day) ? "opacity-40" : ""
                   } ${isToday(day) ? "border-primary border-2" : ""}`}
                 >
-                  <div className="text-lg font-semibold">{day.getDate()}</div>
+                  <div className="text-sm sm:text-lg font-semibold">{day.getDate()}</div>
                   <DayIndicators date={day} />
                 </Card>
               </Link>
@@ -163,32 +163,32 @@ export default function CalendarPage() {
     const hours = Array.from({ length: 19 }, (_, i) => i + 5); // 5 AM to 11 PM
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-2 sm:space-y-4">
         <div className="flex items-center justify-between">
-          <Button variant="ghost" size="icon" onClick={prevWeek}>
-            <ChevronLeft className="h-5 w-5" />
+          <Button variant="ghost" size="icon" onClick={prevWeek} className="h-8 w-8 sm:h-10 sm:w-10">
+            <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
-          <h2 className="text-xl font-bold">
+          <h2 className="text-sm sm:text-xl font-bold">
             Week of {days[0].toLocaleDateString("en-US", { month: "short", day: "numeric" })}
           </h2>
-          <Button variant="ghost" size="icon" onClick={nextWeek}>
-            <ChevronRight className="h-5 w-5" />
+          <Button variant="ghost" size="icon" onClick={nextWeek} className="h-8 w-8 sm:h-10 sm:w-10">
+            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
         </div>
 
-        <div className="grid grid-cols-8 gap-2 overflow-x-auto">
+        <div className="grid grid-cols-8 gap-1 sm:gap-2 overflow-x-auto">
           <div className="col-span-1"></div>
           {days.map((day, i) => (
             <Link key={i} href={`/daily/${formatDate(day)}`}>
               <Card
-                className={`p-2 text-center cursor-pointer hover:border-primary ${
+                className={`p-1 sm:p-2 text-center cursor-pointer hover:border-primary ${
                   isToday(day) ? "border-primary" : ""
                 }`}
               >
-                <div className="font-semibold text-sm">
+                <div className="font-semibold text-[10px] sm:text-sm">
                   {day.toLocaleDateString("en-US", { weekday: "short" })}
                 </div>
-                <div className="text-lg">{day.getDate()}</div>
+                <div className="text-sm sm:text-lg">{day.getDate()}</div>
                 <DayIndicators date={day} />
               </Card>
             </Link>
@@ -196,13 +196,13 @@ export default function CalendarPage() {
 
           {hours.map((hour) => (
             <>
-              <div key={`time-${hour}`} className="text-right text-sm text-muted-foreground pr-2">
+              <div key={`time-${hour}`} className="text-right text-[10px] sm:text-sm text-muted-foreground pr-1 sm:pr-2">
                 {hour === 12 ? "12 PM" : hour > 12 ? `${hour - 12} PM` : `${hour} AM`}
               </div>
               {days.map((day, dayIdx) => (
                 <Card
                   key={`${hour}-${dayIdx}`}
-                  className="h-12 hover:border-primary cursor-pointer"
+                  className="h-8 sm:h-12 hover:border-primary cursor-pointer"
                 />
               ))}
             </>
@@ -216,21 +216,21 @@ export default function CalendarPage() {
     const months = getAllMonths2026();
 
     return (
-      <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-center">2026 Year Overview</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="space-y-3 sm:space-y-6">
+        <h2 className="text-xl sm:text-3xl font-bold text-center">2026 Year Overview</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
           {months.map((month, idx) => {
             const days = getDaysInMonth(month);
             const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
 
             return (
-              <Card key={idx} className="p-4">
-                <h3 className="text-center font-bold mb-3">
+              <Card key={idx} className="p-2 sm:p-4">
+                <h3 className="text-center font-bold text-sm sm:text-base mb-2 sm:mb-3">
                   {month.toLocaleDateString("en-US", { month: "long" })}
                 </h3>
-                <div className="grid grid-cols-7 gap-1">
+                <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
                   {weekDays.map((day, i) => (
-                    <div key={i} className="text-center text-xs text-muted-foreground">
+                    <div key={i} className="text-center text-[9px] sm:text-xs text-muted-foreground">
                       {day}
                     </div>
                   ))}
@@ -239,7 +239,7 @@ export default function CalendarPage() {
                     return (
                       <Link key={i} href={`/daily/${dateStr}`}>
                         <div
-                          className={`text-center text-xs p-1 cursor-pointer hover:bg-primary/20 rounded ${
+                          className={`text-center text-[9px] sm:text-xs p-0.5 sm:p-1 cursor-pointer hover:bg-primary/20 rounded ${
                             !isCurrentMonth(day) ? "opacity-30" : ""
                           } ${isToday(day) ? "bg-primary text-primary-foreground" : ""}`}
                         >
@@ -264,17 +264,17 @@ export default function CalendarPage() {
         description="View your 2026 calendar with daily, weekly, monthly, and yearly views"
       />
 
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="flex items-center gap-3 mb-8">
-          <CalendarIcon className="h-8 w-8 text-primary" />
-          <h1 className="text-4xl font-bold">2026 Calendar</h1>
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-7xl">
+        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-8">
+          <CalendarIcon className="h-5 w-5 sm:h-8 sm:w-8 text-primary" />
+          <h1 className="text-2xl sm:text-4xl font-bold">2026 Calendar</h1>
         </div>
 
-        <Tabs value={view} onValueChange={(v) => setView(v as any)} className="space-y-6">
+        <Tabs value={view} onValueChange={(v) => setView(v as any)} className="space-y-3 sm:space-y-6">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-3">
-            <TabsTrigger value="month">Month</TabsTrigger>
-            <TabsTrigger value="week">Week</TabsTrigger>
-            <TabsTrigger value="year">Year</TabsTrigger>
+            <TabsTrigger value="month" className="text-xs sm:text-sm">Month</TabsTrigger>
+            <TabsTrigger value="week" className="text-xs sm:text-sm">Week</TabsTrigger>
+            <TabsTrigger value="year" className="text-xs sm:text-sm">Year</TabsTrigger>
           </TabsList>
 
           <TabsContent value="month">

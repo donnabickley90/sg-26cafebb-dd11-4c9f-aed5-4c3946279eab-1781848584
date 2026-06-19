@@ -493,59 +493,59 @@ export default function Home() {
       </div>
 
       {/* Header with Date */}
-      <div className="text-center space-y-2 border-b border-border pb-6">
-        <div className="flex items-center justify-center gap-3">
-          <Moon className="w-8 h-8 text-primary" />
-          <h1 className="font-heading text-4xl md:text-5xl font-bold text-primary">
-            Kitten's Chaos Planner
+      <div className="text-center space-y-1 sm:space-y-2 border-b border-border pb-3 sm:pb-6">
+        <div className="flex items-center justify-center gap-2 sm:gap-3">
+          <Moon className="w-5 h-5 sm:w-8 sm:h-8 text-primary" />
+          <h1 className="font-heading text-xl sm:text-4xl md:text-5xl font-bold text-primary">
+            Chaos Planner
           </h1>
-          <Sparkles className="w-8 h-8 text-accent" />
+          <Sparkles className="w-5 h-5 sm:w-8 sm:h-8 text-accent" />
         </div>
-        <div className="space-y-1">
-          <p className="text-2xl font-semibold text-foreground">{dayName}</p>
-          <p className="text-lg text-muted-foreground">{dateString}</p>
+        <div className="space-y-0.5 sm:space-y-1">
+          <p className="text-lg sm:text-2xl font-semibold text-foreground">{dayName}</p>
+          <p className="text-sm sm:text-lg text-muted-foreground">{dateString}</p>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="space-y-3">
-        <h2 className="text-xl font-heading font-semibold text-foreground flex items-center gap-2">
-          <Zap className="w-5 h-5 text-primary" />
+      <div className="space-y-2 sm:space-y-3">
+        <h2 className="text-base sm:text-xl font-heading font-semibold text-foreground flex items-center gap-2">
+          <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
           Quick Actions
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
           <Link href={`/daily/${todayForPlanner}`}>
-            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
-              <Calendar className="w-5 h-5" />
-              <span className="text-xs">Today's Planner</span>
+            <Button variant="outline" className="h-auto py-2 sm:py-3 flex flex-col gap-1 sm:gap-2 w-full">
+              <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-[10px] sm:text-xs">Today's Planner</span>
             </Button>
           </Link>
           <Link href="/meals">
-            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
-              <Utensils className="w-5 h-5" />
-              <span className="text-xs">Plan Meals</span>
+            <Button variant="outline" className="h-auto py-2 sm:py-3 flex flex-col gap-1 sm:gap-2 w-full">
+              <Utensils className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-[10px] sm:text-xs">Plan Meals</span>
             </Button>
           </Link>
           <Link href="/birthdays">
-            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
-              <Cake className="w-5 h-5" />
-              <span className="text-xs">Add Birthday</span>
+            <Button variant="outline" className="h-auto py-2 sm:py-3 flex flex-col gap-1 sm:gap-2 w-full">
+              <Cake className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-[10px] sm:text-xs">Add Birthday</span>
             </Button>
           </Link>
-          <Button variant="outline" className="h-auto py-3 flex flex-col gap-2" onClick={() => {
+          <Button variant="outline" className="h-auto py-2 sm:py-3 flex flex-col gap-1 sm:gap-2" onClick={() => {
             const note = prompt("Enter your quick note:");
             if (note) {
               setQuickNote(note);
             }
           }}>
-            <StickyNote className="w-5 h-5" />
-            <span className="text-xs">Quick Note</span>
+            <StickyNote className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="text-[10px] sm:text-xs">Quick Note</span>
           </Button>
         </div>
       </div>
 
       {/* Dynamically ordered widgets */}
-      <div className="space-y-6">
+      <div className="space-y-3 sm:space-y-6">
         {widgetOrder.map((widgetKey) => {
           const widget = widgetComponents[widgetKey];
           if (!widget) return null;
