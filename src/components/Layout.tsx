@@ -30,7 +30,7 @@ export function Layout({ children }: LayoutProps) {
     { href: `/daily/${today}`, label: "Planner", icon: Calendar },
     { href: "/calendar", label: "Calendar", icon: CalendarRange },
     { href: "/meals", label: "Meals", icon: Utensils },
-    { href: "/chores", label: "Chores", icon: Sparkles },
+    { href: "/cleaning", label: "Chores", icon: Sparkles },
     { href: "/rooms", label: "Rooms", icon: Grid3x3 },
     { href: "/deep-clean", label: "Deep Clean", icon: Wand2 },
     { href: "/declutter", label: "Declutter", icon: Trash2 },
