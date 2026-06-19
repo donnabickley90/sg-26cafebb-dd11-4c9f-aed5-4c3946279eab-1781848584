@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import type { ReactElement } from "react";
 import { ThemedCard, ThemedCardHeader, ThemedCardTitle, ThemedCardDescription, ThemedCardContent } from "@/components/ui/themed-card";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { Progress } from "@/components/ui/progress";
@@ -132,7 +133,7 @@ export default function Home() {
   const moods = ["😊", "😐", "😔", "😤", "😴"];
 
   // Widget component map
-  const widgetComponents: Record<string, JSX.Element> = {
+  const widgetComponents: Record<string, ReactElement> = {
     "progress-summary": (
       <ThemedCard variant="primary" key="progress-summary">
         <ThemedCardHeader>
