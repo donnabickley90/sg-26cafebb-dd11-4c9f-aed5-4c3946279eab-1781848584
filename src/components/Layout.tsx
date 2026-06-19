@@ -19,22 +19,25 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const navItems = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/planner", label: "Planner", icon: Calendar },
-  { href: "/calendar", label: "Calendar", icon: CalendarRange },
-  { href: "/meals", label: "Meals", icon: Utensils },
-  { href: "/chores", label: "Chores", icon: Sparkles },
-  { href: "/rooms", label: "Rooms", icon: Grid3x3 },
-  { href: "/deep-clean", label: "Deep Clean", icon: Wand2 },
-  { href: "/declutter", label: "Declutter", icon: Trash2 },
-  { href: "/birthdays", label: "Birthdays", icon: Cake },
-  { href: "/stats", label: "Stats", icon: BarChart3 },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
-
 export function Layout({ children }: LayoutProps) {
   const router = useRouter();
+  
+  // Generate today's date for the planner link
+  const today = new Date().toISOString().split("T")[0];
+
+  const navItems = [
+    { href: "/", label: "Home", icon: Home },
+    { href: `/daily/${today}`, label: "Planner", icon: Calendar },
+    { href: "/calendar", label: "Calendar", icon: CalendarRange },
+    { href: "/meals", label: "Meals", icon: Utensils },
+    { href: "/chores", label: "Chores", icon: Sparkles },
+    { href: "/rooms", label: "Rooms", icon: Grid3x3 },
+    { href: "/deep-clean", label: "Deep Clean", icon: Wand2 },
+    { href: "/declutter", label: "Declutter", icon: Trash2 },
+    { href: "/birthdays", label: "Birthdays", icon: Cake },
+    { href: "/stats", label: "Stats", icon: BarChart3 },
+    { href: "/settings", label: "Settings", icon: Settings },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,7 +53,10 @@ export function Layout({ children }: LayoutProps) {
             <nav className="flex-1 px-4 space-y-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = router.pathname === item.href;
+                // Special handling for planner route - match any /daily/* path
+                const isActive = item.label === "Planner" 
+                  ? router.pathname.startsWith("/daily")
+                  : router.pathname === item.href;
                 return (
                   <Link
                     key={item.href}
@@ -84,7 +90,10 @@ export function Layout({ children }: LayoutProps) {
           <div className="flex items-center justify-around px-2 py-3">
             {navItems.slice(0, 5).map((item) => {
               const Icon = item.icon;
-              const isActive = router.pathname === item.href;
+              // Special handling for planner route - match any /daily/* path
+              const isActive = item.label === "Planner"
+                ? router.pathname.startsWith("/daily")
+                : router.pathname === item.href;
               return (
                 <Link
                   key={item.href}
