@@ -17,6 +17,7 @@ import {
   Heart,
   Star,
   Zap,
+  BarChart3,
 } from "lucide-react";
 import {
   getCleaningTasks,
@@ -228,7 +229,7 @@ export default function StatsPage() {
         </div>
 
         {/* Task Completion Metrics */}
-        <ThemedCard variant="gradient" className="p-6">
+        <ThemedCard variant="primary" className="p-6">
           <div className="flex items-center gap-3 mb-6">
             <TrendingUp className="w-6 h-6 text-primary" />
             <h2 className="font-heading text-2xl font-bold">Tasks Completed</h2>
@@ -258,7 +259,7 @@ export default function StatsPage() {
 
         {/* Progress Rings */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <ThemedCard variant="elevated" className="p-6">
+          <ThemedCard variant="default" className="p-6">
             <div className="flex flex-col items-center gap-4">
               <ProgressRing 
                 progress={stats.dailyProgress} 
@@ -277,13 +278,12 @@ export default function StatsPage() {
             </div>
           </ThemedCard>
 
-          <ThemedCard variant="elevated" className="p-6">
+          <ThemedCard variant="default" className="p-6">
             <div className="flex flex-col items-center gap-4">
               <ProgressRing 
                 progress={stats.weeklyProgress} 
                 size={140}
                 strokeWidth={12}
-                color="var(--accent)"
               />
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
@@ -297,13 +297,12 @@ export default function StatsPage() {
             </div>
           </ThemedCard>
 
-          <ThemedCard variant="elevated" className="p-6">
+          <ThemedCard variant="default" className="p-6">
             <div className="flex flex-col items-center gap-4">
               <ProgressRing 
                 progress={stats.deepProgress} 
                 size={140}
                 strokeWidth={12}
-                color="var(--secondary)"
               />
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
@@ -390,7 +389,7 @@ export default function StatsPage() {
         </div>
 
         {/* Room Progress */}
-        <ThemedCard variant="gradient" className="p-6">
+        <ThemedCard variant="primary" className="p-6">
           <div className="flex items-center gap-3 mb-6">
             <Home className="w-6 h-6 text-primary" />
             <h2 className="font-heading text-2xl font-bold">Room Progress</h2>
@@ -413,7 +412,7 @@ export default function StatsPage() {
 
         {/* Additional Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <ThemedCard variant="elevated" className="p-6 text-center">
+          <ThemedCard variant="default" className="p-6 text-center">
             <Utensils className="w-10 h-10 text-primary mx-auto mb-3" />
             <div className="text-3xl font-bold text-primary mb-2">
               {stats.mealPlansCreated}
@@ -423,7 +422,7 @@ export default function StatsPage() {
             </div>
           </ThemedCard>
 
-          <ThemedCard variant="elevated" className="p-6 text-center">
+          <ThemedCard variant="default" className="p-6 text-center">
             <Cake className="w-10 h-10 text-accent mx-auto mb-3" />
             <div className="text-3xl font-bold text-accent mb-2">
               {stats.birthdaysTracked}
@@ -433,7 +432,7 @@ export default function StatsPage() {
             </div>
           </ThemedCard>
 
-          <ThemedCard variant="elevated" className="p-6 text-center">
+          <ThemedCard variant="default" className="p-6 text-center">
             <Star className="w-10 h-10 text-secondary mx-auto mb-3" />
             <div className="text-3xl font-bold text-secondary mb-2">
               {stats.declutterProgress}%
