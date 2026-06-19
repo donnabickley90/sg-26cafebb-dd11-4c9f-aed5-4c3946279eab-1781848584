@@ -1,6 +1,6 @@
 ---
 title: 2026 Calendar Views and Hourly Daily Planner
-status: in_progress
+status: done
 priority: high
 type: feature
 tags:
