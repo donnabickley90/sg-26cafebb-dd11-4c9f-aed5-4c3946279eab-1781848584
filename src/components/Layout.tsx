@@ -53,10 +53,18 @@ export function Layout({ children }: LayoutProps) {
             <nav className="flex-1 px-4 space-y-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                // Special handling for planner route - match any /daily/* path
-                const isActive = item.label === "Planner" 
-                  ? router.pathname.startsWith("/daily")
-                  : router.pathname === item.href;
+                // Enhanced active state detection for routes with sub-pages
+                const isActive = 
+                  item.label === "Planner" 
+                    ? router.pathname.startsWith("/daily")
+                    : item.label === "Chores"
+                    ? router.pathname.startsWith("/cleaning")
+                    : item.label === "Deep Clean"
+                    ? router.pathname.startsWith("/deep-clean")
+                    : item.label === "Calendar"
+                    ? router.pathname.startsWith("/calendar")
+                    : router.pathname === item.href;
+                
                 return (
                   <Link
                     key={item.href}
@@ -65,11 +73,11 @@ export function Layout({ children }: LayoutProps) {
                       "flex items-center gap-3 px-4 py-3 rounded-3xl transition-all duration-200",
                       "hover:bg-sidebar-accent hover:scale-105",
                       isActive
-                        ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-lg"
-                        : "text-sidebar-foreground"
+                        ? "bg-gradient-to-r from-primary/20 to-accent/20 text-primary shadow-lg border-l-4 border-primary font-semibold"
+                        : "text-sidebar-foreground hover:text-sidebar-accent-foreground"
                     )}
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className={cn("w-5 h-5", isActive && "animate-pulse")} />
                     <span className="font-medium">{item.label}</span>
                   </Link>
                 );
@@ -90,10 +98,16 @@ export function Layout({ children }: LayoutProps) {
           <div className="flex items-center justify-around px-2 py-3">
             {navItems.slice(0, 5).map((item) => {
               const Icon = item.icon;
-              // Special handling for planner route - match any /daily/* path
-              const isActive = item.label === "Planner"
-                ? router.pathname.startsWith("/daily")
-                : router.pathname === item.href;
+              // Enhanced active state detection for routes with sub-pages
+              const isActive = 
+                item.label === "Planner"
+                  ? router.pathname.startsWith("/daily")
+                  : item.label === "Chores"
+                  ? router.pathname.startsWith("/cleaning")
+                  : item.label === "Calendar"
+                  ? router.pathname.startsWith("/calendar")
+                  : router.pathname === item.href;
+              
               return (
                 <Link
                   key={item.href}
@@ -101,11 +115,11 @@ export function Layout({ children }: LayoutProps) {
                   className={cn(
                     "flex flex-col items-center gap-1 px-3 py-2 rounded-2xl transition-all duration-200",
                     isActive
-                      ? "text-primary"
-                      : "text-sidebar-foreground"
+                      ? "text-primary bg-primary/10 scale-110 font-semibold"
+                      : "text-sidebar-foreground hover:text-primary"
                   )}
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className={cn("w-5 h-5", isActive && "drop-shadow-glow")} />
                   <span className="text-xs font-medium">{item.label}</span>
                 </Link>
               );
@@ -115,11 +129,11 @@ export function Layout({ children }: LayoutProps) {
               className={cn(
                 "flex flex-col items-center gap-1 px-3 py-2 rounded-2xl transition-all duration-200",
                 router.pathname === "/settings"
-                  ? "text-primary"
-                  : "text-sidebar-foreground"
+                  ? "text-primary bg-primary/10 scale-110 font-semibold"
+                  : "text-sidebar-foreground hover:text-primary"
               )}
             >
-              <Settings className="w-5 h-5" />
+              <Settings className={cn("w-5 h-5", router.pathname === "/settings" && "drop-shadow-glow")} />
               <span className="text-xs font-medium">More</span>
             </Link>
           </div>
