@@ -1,6 +1,6 @@
 ---
 title: Weekly Meal Planner and Groceries
-status: in_progress
+status: done
 priority: medium
 type: feature
 tags:
@@ -17,11 +17,11 @@ A reusable weekly meal planning system with an integrated grocery list, favourit
 ## Checklist
 - [x] Build a Weekly Meal Planner view (Monday-Sunday) with editable fields for: Breakfast, Lunch, Dinner, Snacks, and Drinks/Shakes.
 - [x] Implement a Grocery List section where ingredients can be added and explicitly ticked off while shopping.
-- [ ] Add a mechanism to add grocery items directly from meal plans.
+- [x] Add a mechanism to add grocery items directly from meal plans.
 - [x] Implement a "Favourite Meals" repository (save, edit, delete).
 - [x] Add action buttons to the week view: "Copy a previous week" and "Clear/reset week".
 - [x] Add a general notes section for the weekly meal plan.
-- [ ] Ensure today's meals sync to the Dashboard and Daily Planner views.
+- [x] Ensure today's meals sync to the Dashboard and Daily Planner views.
 
 ## Acceptance
 - User can map out meals and separate drinks/shakes for the entire week.
