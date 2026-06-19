@@ -71,6 +71,51 @@ export interface ChoreData {
   nextDue?: string;
 }
 
+// New enhanced Chaos Cleaner types
+export interface CleaningTask {
+  id: string;
+  room: string;
+  task: string;
+  frequency: "daily" | "weekly" | "monthly" | "deep";
+  lastCompleted?: string;
+  nextDue?: string;
+  priority?: "high" | "medium" | "low";
+  notes?: string;
+  createdAt: string;
+}
+
+export interface CleaningStreak {
+  current: number;
+  longest: number;
+  lastCompletedDate?: string;
+}
+
+export interface RoomProgress {
+  room: string;
+  dailyComplete: number;
+  dailyTotal: number;
+  weeklyComplete: number;
+  weeklyTotal: number;
+  monthlyComplete: number;
+  monthlyTotal: number;
+  deepComplete: number;
+  deepTotal: number;
+}
+
+export const PREDEFINED_ROOMS = [
+  "Kitchen",
+  "Lounge Room",
+  "Dining Room",
+  "Master Bedroom",
+  "Master Bathroom",
+  "Guest Bathroom",
+  "Guest Toilet",
+  "Spare Toilet",
+  "Laundry",
+  "Activity Room",
+  "Entry Way",
+] as const;
+
 export interface DeepCleanTask {
   id: string;
   task: string;
@@ -309,6 +354,180 @@ export const addDeepCleanTask = (task: string, room: string): void => {
 export const deleteDeepCleanTask = (taskId: string): void => {
   const tasks = getDeepCleanTasks().filter(t => t.id !== taskId);
   saveDeepCleanTasks(tasks);
+};
+
+// Chaos Cleaner Storage Functions
+
+export const saveCleaningTasks = (tasks: CleaningTask[]): void => {
+  localStorage.setItem("cleaning_tasks", JSON.stringify(tasks));
+};
+
+export const getCleaningTasks = (): CleaningTask[] => {
+  const stored = localStorage.getItem("cleaning_tasks");
+  if (!stored) return [];
+  return JSON.parse(stored);
+};
+
+export const getCleaningTasksByRoom = (room: string): CleaningTask[] => {
+  return getCleaningTasks().filter(task => task.room === room);
+};
+
+export const getCleaningTasksByFrequency = (frequency: CleaningTask["frequency"]): CleaningTask[] => {
+  return getCleaningTasks().filter(task => task.frequency === frequency);
+};
+
+export const getDailyTasksDueToday = (): CleaningTask[] => {
+  const today = new Date().toISOString().split("T")[0];
+  return getCleaningTasks().filter(task => 
+    task.frequency === "daily" && (!task.lastCompleted || task.lastCompleted !== today)
+  );
+};
+
+export const getWeeklyTasksDueThisWeek = (): CleaningTask[] => {
+  const tasks = getCleaningTasks();
+  const today = new Date();
+  const weekStart = getMondayOfWeek(today);
+  
+  return tasks.filter(task => {
+    if (task.frequency !== "weekly") return false;
+    if (!task.lastCompleted) return true;
+    
+    const lastCompletedWeek = getMondayOfWeek(new Date(task.lastCompleted));
+    return lastCompletedWeek !== weekStart;
+  });
+};
+
+export const completeCleaningTask = (taskId: string): void => {
+  const tasks = getCleaningTasks();
+  const task = tasks.find(t => t.id === taskId);
+  if (!task) return;
+  
+  const today = new Date().toISOString().split("T")[0];
+  task.lastCompleted = today;
+  
+  // Update streak
+  const streak = getCleaningStreak();
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split("T")[0];
+  
+  if (!streak.lastCompletedDate || streak.lastCompletedDate === yesterdayStr || streak.lastCompletedDate === today) {
+    if (streak.lastCompletedDate !== today) {
+      streak.current += 1;
+    }
+  } else {
+    streak.current = 1;
+  }
+  
+  if (streak.current > streak.longest) {
+    streak.longest = streak.current;
+  }
+  
+  streak.lastCompletedDate = today;
+  saveCleaningStreak(streak);
+  
+  // Calculate next due date based on frequency
+  if (task.frequency === "daily") {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    task.nextDue = tomorrow.toISOString().split("T")[0];
+  } else if (task.frequency === "weekly") {
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    task.nextDue = nextWeek.toISOString().split("T")[0];
+  } else if (task.frequency === "monthly") {
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    task.nextDue = nextMonth.toISOString().split("T")[0];
+  }
+  
+  saveCleaningTasks(tasks);
+};
+
+export const addCleaningTask = (task: Omit<CleaningTask, "id" | "createdAt">): void => {
+  const tasks = getCleaningTasks();
+  const newTask: CleaningTask = {
+    ...task,
+    id: crypto.randomUUID(),
+    createdAt: new Date().toISOString(),
+  };
+  tasks.push(newTask);
+  saveCleaningTasks(tasks);
+};
+
+export const deleteCleaningTask = (taskId: string): void => {
+  const tasks = getCleaningTasks().filter(t => t.id !== taskId);
+  saveCleaningTasks(tasks);
+};
+
+export const getRoomProgress = (room: string): RoomProgress => {
+  const tasks = getCleaningTasksByRoom(room);
+  const today = new Date().toISOString().split("T")[0];
+  const weekStart = getMondayOfWeek(new Date());
+  
+  const dailyTasks = tasks.filter(t => t.frequency === "daily");
+  const weeklyTasks = tasks.filter(t => t.frequency === "weekly");
+  const monthlyTasks = tasks.filter(t => t.frequency === "monthly");
+  const deepTasks = tasks.filter(t => t.frequency === "deep");
+  
+  return {
+    room,
+    dailyComplete: dailyTasks.filter(t => t.lastCompleted === today).length,
+    dailyTotal: dailyTasks.length,
+    weeklyComplete: weeklyTasks.filter(t => t.lastCompleted && getMondayOfWeek(new Date(t.lastCompleted)) === weekStart).length,
+    weeklyTotal: weeklyTasks.length,
+    monthlyComplete: monthlyTasks.filter(t => t.lastCompleted?.startsWith(today.substring(0, 7))).length,
+    monthlyTotal: monthlyTasks.length,
+    deepComplete: deepTasks.filter(t => t.lastCompleted).length,
+    deepTotal: deepTasks.length,
+  };
+};
+
+export const getAllRoomsProgress = (): RoomProgress[] => {
+  return PREDEFINED_ROOMS.map(room => getRoomProgress(room));
+};
+
+export const getTodaysCleaningProgress = (): { complete: number; total: number; percentage: number } => {
+  const dailyTasks = getDailyTasksDueToday();
+  const today = new Date().toISOString().split("T")[0];
+  const completed = getCleaningTasks().filter(t => 
+    t.frequency === "daily" && t.lastCompleted === today
+  );
+  
+  const total = getCleaningTasks().filter(t => t.frequency === "daily").length;
+  const complete = completed.length;
+  const percentage = total > 0 ? Math.round((complete / total) * 100) : 0;
+  
+  return { complete, total, percentage };
+};
+
+// Cleaning Streak Storage
+export const saveCleaningStreak = (streak: CleaningStreak): void => {
+  localStorage.setItem("cleaning_streak", JSON.stringify(streak));
+};
+
+export const getCleaningStreak = (): CleaningStreak => {
+  const stored = localStorage.getItem("cleaning_streak");
+  if (!stored) {
+    return { current: 0, longest: 0 };
+  }
+  return JSON.parse(stored);
+};
+
+// Reset daily tasks (called automatically or manually)
+export const resetDailyTasks = (): void => {
+  const tasks = getCleaningTasks();
+  const today = new Date().toISOString().split("T")[0];
+  
+  tasks.forEach(task => {
+    if (task.frequency === "daily") {
+      if (task.lastCompleted !== today) {
+        task.lastCompleted = undefined;
+      }
+    }
+  });
+  
+  saveCleaningTasks(tasks);
 };
 
 // Calendar indicators - check if a date has events
