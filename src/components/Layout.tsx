@@ -41,10 +41,6 @@ export function Layout({ children }: LayoutProps) {
     { href: `/daily/${today}`, label: "Planner", icon: Calendar },
     { href: "/calendar", label: "Calendar", icon: CalendarRange },
     { href: "/meals", label: "Meals", icon: Utensils },
-    { href: "/cleaning", label: "Chores", icon: Sparkles },
-    { href: "/rooms", label: "Rooms", icon: Grid3x3 },
-    { href: "/deep-clean", label: "Deep Clean", icon: Wand2 },
-    { href: "/declutter", label: "Declutter", icon: Trash2 },
     { href: "/birthdays", label: "Birthdays", icon: Cake },
     { href: "/stats", label: "Stats", icon: BarChart3 },
     { href: "/settings", label: "Settings", icon: Settings },
@@ -69,10 +65,6 @@ export function Layout({ children }: LayoutProps) {
                 const isActive = 
                   item.label === "Planner" 
                     ? router.pathname.startsWith("/daily")
-                    : item.label === "Chores"
-                    ? router.pathname.startsWith("/cleaning")
-                    : item.label === "Deep Clean"
-                    ? router.pathname.startsWith("/deep-clean")
                     : item.label === "Calendar"
                     ? router.pathname.startsWith("/calendar")
                     : router.pathname === item.href;
@@ -123,8 +115,6 @@ export function Layout({ children }: LayoutProps) {
               const isActive = 
                 item.label === "Planner"
                   ? router.pathname.startsWith("/daily")
-                  : item.label === "Chores"
-                  ? router.pathname.startsWith("/cleaning")
                   : item.label === "Calendar"
                   ? router.pathname.startsWith("/calendar")
                   : router.pathname === item.href;
@@ -145,57 +135,6 @@ export function Layout({ children }: LayoutProps) {
                 </Link>
               );
             })}
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <button
-                  className={cn(
-                    "flex flex-col items-center gap-1 px-3 py-2 rounded-2xl transition-all duration-200",
-                    "text-sidebar-foreground hover:text-primary"
-                  )}
-                >
-                  <Menu className="w-5 h-5" />
-                  <span className="text-xs font-medium">More</span>
-                </button>
-              </SheetTrigger>
-              <SheetContent side="bottom" className="h-[80vh]">
-                <SheetHeader>
-                  <SheetTitle className="font-heading">All Sections</SheetTitle>
-                </SheetHeader>
-                <nav className="mt-6 space-y-2">
-                  {navItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = 
-                      item.label === "Planner"
-                        ? router.pathname.startsWith("/daily")
-                        : item.label === "Chores"
-                        ? router.pathname.startsWith("/cleaning")
-                        : item.label === "Deep Clean"
-                        ? router.pathname.startsWith("/deep-clean")
-                        : item.label === "Calendar"
-                        ? router.pathname.startsWith("/calendar")
-                        : router.pathname === item.href;
-                    
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={cn(
-                          "flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 w-full",
-                          "hover:bg-sidebar-accent",
-                          isActive
-                            ? "bg-gradient-to-r from-primary/20 to-accent/20 text-primary shadow-lg border-l-4 border-primary font-semibold"
-                            : "text-sidebar-foreground"
-                        )}
-                      >
-                        <Icon className={cn("w-5 h-5", isActive && "animate-pulse")} />
-                        <span className="font-medium">{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                </nav>
-              </SheetContent>
-            </Sheet>
           </div>
         </nav>
       </div>

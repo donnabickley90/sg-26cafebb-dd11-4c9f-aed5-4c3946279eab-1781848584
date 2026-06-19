@@ -25,7 +25,7 @@ import {
   Home as HomeIcon,
   RefreshCw
 } from "lucide-react";
-import { getTodaysMealsFromWeekly, getDeepCleanTasksForDate, completeDeepCleanTask, getDeclutterProgress, getCurrentDeclutterDay, getUpcomingImportantDates, type DeepCleanTask } from "@/lib/storage";
+import { getTodaysMealsFromWeekly, getUpcomingImportantDates } from "@/lib/storage";
 import Link from "next/link";
 
 export default function Home() {
@@ -33,17 +33,11 @@ export default function Home() {
   const [mood, setMood] = useState<string | null>(null);
   const [spoons, setSpoons] = useState(3);
   const [todaysMeals, setTodaysMeals] = useState<{ breakfast: string; lunch: string; dinner: string; snacks: string; drinks: string } | null>(null);
-  const [deepCleanTasksToday, setDeepCleanTasksToday] = useState<DeepCleanTask[]>([]);
-  const [declutterProgress, setDeclutterProgress] = useState({ completedDays: 0, totalDays: 30, completedItems: 0, totalItems: 465, percentage: 0 });
-  const [declutterCurrentDay, setDeclutterCurrentDay] = useState<number | null>(null);
   const [upcomingBirthdays, setUpcomingBirthdays] = useState<Array<{ name: string; date: string; daysUntil: number; category: string }>>([]);
   const [widgetOrder, setWidgetOrder] = useState<string[]>([
     "progress-summary",
     "schedule",
     "meals",
-    "chores",
-    "deep-clean",
-    "declutter",
     "birthdays",
     "dates",
     "priorities",
@@ -68,15 +62,6 @@ export default function Home() {
   const loadDashboardData = useCallback(() => {
     const meals = getTodaysMealsFromWeekly(todayStr);
     setTodaysMeals(meals);
-    
-    const deepCleanTasks = getDeepCleanTasksForDate(todayStr);
-    setDeepCleanTasksToday(deepCleanTasks);
-    
-    const declutterProg = getDeclutterProgress();
-    setDeclutterProgress(declutterProg);
-    
-    const currentDay = getCurrentDeclutterDay();
-    setDeclutterCurrentDay(currentDay);
 
     // Load upcoming birthdays
     const upcomingDates = getUpcomingImportantDates(30);
@@ -160,22 +145,11 @@ export default function Home() {
     touchStartY.current = 0;
   };
 
-  const handleCompleteDeepClean = (taskId: string) => {
-    completeDeepCleanTask(taskId);
-    setDeepCleanTasksToday(getDeepCleanTasksForDate(todayStr));
-  };
-
   const upcomingHours = [
     { time: "9:00 AM", task: "Morning routine & coffee", status: "done" },
     { time: "10:00 AM", task: "Deep work session", status: "current" },
     { time: "11:00 AM", task: "Team sync", status: "pending" },
     { time: "12:00 PM", task: "Lunch break", status: "pending" },
-  ];
-
-  const choresForToday = [
-    { room: "Kitchen", task: "Wipe counters", done: true },
-    { room: "Bedroom", task: "Make bed", done: true },
-    { room: "Bathroom", task: "Quick clean", done: false },
   ];
 
   const priorities = [
@@ -200,19 +174,12 @@ export default function Home() {
           </ThemedCardTitle>
         </ThemedCardHeader>
         <ThemedCardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="flex flex-col items-center space-y-3">
               <ProgressRing progress={35} size={90} />
               <div className="text-center">
                 <p className="text-sm font-medium">Daily Planner</p>
                 <p className="text-xs text-muted-foreground">6/17 hours</p>
-              </div>
-            </div>
-            <div className="flex flex-col items-center space-y-3">
-              <ProgressRing progress={68} size={90} />
-              <div className="text-center">
-                <p className="text-sm font-medium">Cleaning</p>
-                <p className="text-xs text-muted-foreground">7/11 rooms</p>
               </div>
             </div>
             <div className="flex flex-col items-center space-y-3">
@@ -319,114 +286,6 @@ export default function Home() {
               </Link>
             </div>
           )}
-        </ThemedCardContent>
-      </ThemedCard>
-    ),
-    "chores": (
-      <ThemedCard variant="glow" key="chores">
-        <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2">
-            <Wand2 className="w-5 h-5 text-secondary-foreground" />
-            Chores Due Today
-          </ThemedCardTitle>
-          <ThemedCardDescription>Daily cleaning tasks</ThemedCardDescription>
-        </ThemedCardHeader>
-        <ThemedCardContent>
-          <div className="space-y-2">
-            {choresForToday.map((chore, idx) => (
-              <div key={idx} className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                <input type="checkbox" checked={chore.done} readOnly className="w-4 h-4" />
-                <HomeIcon className="w-4 h-4 text-muted-foreground" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium">{chore.room}</p>
-                  <p className="text-xs text-muted-foreground">{chore.task}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </ThemedCardContent>
-      </ThemedCard>
-    ),
-    "deep-clean": (
-      <ThemedCard variant="glow" key="deep-clean">
-        <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary" />
-            Deep Clean Tasks
-          </ThemedCardTitle>
-          <ThemedCardDescription>Scheduled deep cleaning</ThemedCardDescription>
-        </ThemedCardHeader>
-        <ThemedCardContent>
-          <div className="space-y-2">
-            {deepCleanTasksToday.length === 0 ? (
-              <div className="text-center py-4">
-                <p className="text-muted-foreground text-sm">No deep clean tasks scheduled for today</p>
-                <Link href="/deep-clean">
-                  <Button variant="outline" size="sm" className="mt-2">
-                    Schedule Tasks
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              deepCleanTasksToday.map((task) => (
-                <div key={task.id} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30">
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">{task.task}</p>
-                    <p className="text-xs text-muted-foreground">{task.room}</p>
-                  </div>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => handleCompleteDeepClean(task.id)}
-                  >
-                    <CheckCircle2 className="w-4 h-4 text-primary" />
-                  </Button>
-                </div>
-              ))
-            )}
-          </div>
-        </ThemedCardContent>
-      </ThemedCard>
-    ),
-    "declutter": (
-      <ThemedCard variant="glow" key="declutter">
-        <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-accent" />
-            Declutter Challenge
-          </ThemedCardTitle>
-          <ThemedCardDescription>30-day item clearing challenge</ThemedCardDescription>
-        </ThemedCardHeader>
-        <ThemedCardContent>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-bold">{declutterProgress.completedItems}/{declutterProgress.totalItems}</p>
-                <p className="text-xs text-muted-foreground">Items cleared</p>
-              </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold">{declutterProgress.completedDays}/30</p>
-                <p className="text-xs text-muted-foreground">Days completed</p>
-              </div>
-            </div>
-            
-            <Progress value={declutterProgress.percentage} className="h-2" />
-            
-            {declutterCurrentDay && (
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-accent/10 border border-accent/20">
-                <Star className="w-4 h-4 text-accent" />
-                <p className="text-sm">
-                  Currently on <span className="font-semibold">Day {declutterCurrentDay}</span>
-                </p>
-              </div>
-            )}
-            
-            <Link href="/declutter">
-              <Button variant="outline" size="sm" className="w-full">
-                View Challenge
-              </Button>
-            </Link>
-          </div>
         </ThemedCardContent>
       </ThemedCard>
     ),
@@ -654,35 +513,17 @@ export default function Home() {
           <Zap className="w-5 h-5 text-primary" />
           Quick Actions
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <Link href={`/daily/${todayForPlanner}`}>
             <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
               <Calendar className="w-5 h-5" />
               <span className="text-xs">Today's Planner</span>
             </Button>
           </Link>
-          <Link href="/cleaning/daily-reset">
-            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
-              <CheckCircle2 className="w-5 h-5" />
-              <span className="text-xs">Daily Reset</span>
-            </Button>
-          </Link>
-          <Link href="/cleaning/weekly-reset">
-            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
-              <ListChecks className="w-5 h-5" />
-              <span className="text-xs">Weekly Reset</span>
-            </Button>
-          </Link>
-          <Link href="/cleaning/add-task">
-            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
-              <Plus className="w-5 h-5" />
-              <span className="text-xs">Add Task</span>
-            </Button>
-          </Link>
           <Link href="/meals">
             <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
               <Utensils className="w-5 h-5" />
-              <span className="text-xs">Add Meal</span>
+              <span className="text-xs">Plan Meals</span>
             </Button>
           </Link>
           <Link href="/birthdays">
@@ -700,18 +541,6 @@ export default function Home() {
             <StickyNote className="w-5 h-5" />
             <span className="text-xs">Quick Note</span>
           </Button>
-          <Link href="/declutter">
-            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
-              <Sparkles className="w-5 h-5" />
-              <span className="text-xs">Declutter</span>
-            </Button>
-          </Link>
-          <Link href="/deep-clean">
-            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
-              <CalendarDays className="w-5 h-5" />
-              <span className="text-xs">Deep Clean</span>
-            </Button>
-          </Link>
         </div>
       </div>
 
@@ -721,14 +550,10 @@ export default function Home() {
           const widget = widgetComponents[widgetKey];
           if (!widget) return null;
           
-          // Render progress-summary full width, others in 2-column grid where appropriate
+          // Render progress-summary full width
           if (widgetKey === "progress-summary") {
             return widget;
           }
-          
-          // Group 2-column widgets
-          const twoColWidgets = ["schedule", "meals", "chores", "deep-clean", "declutter", "birthdays", "dates"];
-          const threeColWidgets = ["priorities", "mood", "notes"];
           
           return null; // Will be handled by grid sections below
         })}
@@ -736,7 +561,7 @@ export default function Home() {
         {/* Two-column grid section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {widgetOrder
-            .filter(key => ["schedule", "meals", "chores", "deep-clean", "declutter", "birthdays", "dates"].includes(key))
+            .filter(key => ["schedule", "meals", "birthdays", "dates"].includes(key))
             .map(key => widgetComponents[key])}
         </div>
         
