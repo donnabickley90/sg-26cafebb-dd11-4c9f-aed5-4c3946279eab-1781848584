@@ -465,6 +465,27 @@ export const getCleaningTasksByRoom = (room: string): CleaningTask[] => {
   return getCleaningTasks().filter(task => task.room === room);
 };
 
+// Alias for getRoomTasks (used by Rooms page)
+export const getRoomTasks = (roomId: string): CleaningTask[] => {
+  if (!isClient) return [];
+  // Map room ID to display name
+  const roomMap: Record<string, string> = {
+    "kitchen": "Kitchen",
+    "lounge": "Lounge Room",
+    "dining": "Dining Room",
+    "master-bedroom": "Master Bedroom",
+    "master-bathroom": "Master Bathroom",
+    "guest-bathroom": "Guest Bathroom",
+    "guest-toilet": "Guest Toilet",
+    "spare-toilet": "Spare Toilet",
+    "laundry": "Laundry",
+    "activity-room": "Activity Room",
+    "entry": "Entry Way",
+  };
+  const roomName = roomMap[roomId] || roomId;
+  return getCleaningTasksByRoom(roomName);
+};
+
 export const getCleaningTasksByFrequency = (frequency: CleaningTask["frequency"]): CleaningTask[] => {
   if (!isClient) return [];
   return getCleaningTasks().filter(task => task.frequency === frequency);
