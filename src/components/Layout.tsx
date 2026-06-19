@@ -14,6 +14,7 @@ import {
   Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeSwitch } from "@/components/ThemeSwitch";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -45,10 +46,11 @@ export function Layout({ children }: LayoutProps) {
         {/* Desktop Sidebar */}
         <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-sidebar border-r border-sidebar-border">
           <div className="flex-1 flex flex-col pt-8 pb-4 overflow-y-auto">
-            <div className="flex items-center justify-center px-6 mb-8">
+            <div className="flex items-center justify-between px-6 mb-8">
               <h1 className="font-heading font-bold text-2xl text-primary">
-                Kitten&apos;s Chaos Planner
+                Chaos Planner
               </h1>
+              <ThemeSwitch />
             </div>
             <nav className="flex-1 px-4 space-y-2">
               {navItems.map((item) => {
@@ -85,6 +87,16 @@ export function Layout({ children }: LayoutProps) {
             </nav>
           </div>
         </aside>
+
+        {/* Mobile Top Bar */}
+        <div className="lg:hidden sticky top-0 z-40 bg-sidebar/95 backdrop-blur-sm border-b border-sidebar-border">
+          <div className="flex items-center justify-between px-4 py-3">
+            <h1 className="font-heading font-bold text-lg text-primary">
+              Chaos Planner
+            </h1>
+            <ThemeSwitch />
+          </div>
+        </div>
 
         {/* Main Content */}
         <main className="flex-1 lg:ml-64 pb-20 lg:pb-8">

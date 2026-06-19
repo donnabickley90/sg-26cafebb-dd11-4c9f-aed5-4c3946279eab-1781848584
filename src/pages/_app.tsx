@@ -1,12 +1,11 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Layout } from "@/components/Layout";
+import { ThemeProvider } from "next-themes";
 import { useEffect } from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    document.documentElement.classList.add("dark");
-    
     // Register Service Worker for PWA offline support
     if ("serviceWorker" in navigator && typeof window !== "undefined") {
       window.addEventListener("load", () => {
@@ -23,8 +22,10 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </ThemeProvider>
   );
 }
