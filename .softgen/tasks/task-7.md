@@ -3,9 +3,12 @@ title: Settings, Customisation, and Local JSON Backup
 status: todo
 priority: medium
 type: feature
-tags: [settings, data, export]
+tags:
+- settings
+- data
+- export
 created_by: agent
-created_at: 2026-06-18T21:36:06Z
+created_at: 2026-06-18 21:36:06+00:00
 position: 7
 ---
 
@@ -13,9 +16,9 @@ position: 7
 Handles local storage data management, privacy guarantees, and extensive aesthetic customisation options.
 
 ## Checklist
-- [ ] Build a Settings page with a "Data & Privacy" section explicitly stating no cloud storage is used.
-- [ ] Implement JSON Backup: "Export Data" (downloads local storage as JSON) and "Import Data" (restores app state from JSON).
-- [ ] Add a customisation setting to select Accent Colours. Must include: Deep purple, Hot pink, Lilac, Silver, Blood red, and Midnight blue (updates CSS variables globally).
+- [x] Build a Settings page with a "Data & Privacy" section explicitly stating no cloud storage is used.
+- [x] Implement JSON Backup: "Export Data" (downloads local storage as JSON) and "Import Data" (restores app state from JSON).
+- [x] Add a customisation setting to select Accent Colours. Must include: Deep purple, Hot pink, Lilac, Silver, Blood red, and Midnight blue (updates CSS variables globally).
 - [ ] Add UI to add, edit, or rename custom rooms (extending the base 11) and custom chore categories.
 - [ ] Implement a "Reorder dashboard widgets" setting (drag-and-drop or simple up/down arrows) saving preference to local storage.
 - [ ] Add ability to "Copy previous day's routine" for the daily planner hourly schedule.
