@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type { ReactElement } from "react";
 import { ThemedCard, ThemedCardHeader, ThemedCardTitle, ThemedCardDescription, ThemedCardContent } from "@/components/ui/themed-card";
 import { ProgressRing } from "@/components/ui/progress-ring";
@@ -22,7 +22,8 @@ import {
   Moon,
   ListChecks,
   CalendarDays,
-  Home as HomeIcon
+  Home as HomeIcon,
+  RefreshCw
 } from "lucide-react";
 import { getTodaysMealsFromWeekly, getDeepCleanTasksForDate, completeDeepCleanTask, getDeclutterProgress, getCurrentDeclutterDay, getUpcomingImportantDates, type DeepCleanTask } from "@/lib/storage";
 import Link from "next/link";
@@ -50,20 +51,21 @@ export default function Home() {
     "notes",
   ]);
 
+  // Pull-to-refresh state
+  const [isPulling, setIsPulling] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [pullDistance, setPullDistance] = useState(0);
+  const touchStartY = useRef(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   // Mock data for demonstration
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
   const dayName = today.toLocaleDateString("en-US", { weekday: "long" });
   const dateString = today.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
-  // Load today's meals and deep clean tasks on mount
-  useEffect(() => {
-    // Load widget order
-    const savedOrder = localStorage.getItem("widget_order");
-    if (savedOrder) {
-      setWidgetOrder(JSON.parse(savedOrder));
-    }
-
+  // Load/refresh all dashboard data
+  const loadDashboardData = useCallback(() => {
     const meals = getTodaysMealsFromWeekly(todayStr);
     setTodaysMeals(meals);
     
@@ -104,7 +106,59 @@ export default function Home() {
       };
     });
     setUpcomingBirthdays(birthdaysData);
-  }, [todayStr]);
+  }, [todayStr, today]);
+
+  // Initial load
+  useEffect(() => {
+    // Load widget order
+    if (typeof window !== "undefined") {
+      const savedOrder = localStorage.getItem("widget_order");
+      if (savedOrder) {
+        setWidgetOrder(JSON.parse(savedOrder));
+      }
+    }
+
+    loadDashboardData();
+  }, [loadDashboardData]);
+
+  // Pull-to-refresh handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (containerRef.current && containerRef.current.scrollTop === 0) {
+      touchStartY.current = e.touches[0].clientY;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartY.current === 0 || isRefreshing) return;
+
+    const touchY = e.touches[0].clientY;
+    const distance = touchY - touchStartY.current;
+
+    if (distance > 0 && containerRef.current && containerRef.current.scrollTop === 0) {
+      setIsPulling(true);
+      setPullDistance(Math.min(distance, 120)); // Max pull distance
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (pullDistance > 80 && !isRefreshing) {
+      // Trigger refresh
+      setIsRefreshing(true);
+      setIsPulling(false);
+      
+      // Simulate refresh delay
+      setTimeout(() => {
+        loadDashboardData();
+        setIsRefreshing(false);
+        setPullDistance(0);
+      }, 1000);
+    } else {
+      setIsPulling(false);
+      setPullDistance(0);
+    }
+    
+    touchStartY.current = 0;
+  };
 
   const handleCompleteDeepClean = (taskId: string) => {
     completeDeepCleanTask(taskId);
@@ -548,7 +602,34 @@ export default function Home() {
   };
 
   return (
-    <div className="space-y-6 pb-8">
+    <div 
+      ref={containerRef}
+      className="space-y-6 pb-8 relative"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Pull-to-refresh indicator */}
+      <div 
+        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center transition-all duration-300 pointer-events-none"
+        style={{
+          transform: `translateY(${isPulling ? pullDistance - 60 : isRefreshing ? 20 : -60}px)`,
+          opacity: isPulling || isRefreshing ? 1 : 0,
+        }}
+      >
+        <div className="bg-card/95 backdrop-blur-sm border border-border rounded-full px-6 py-3 shadow-lg flex items-center gap-3">
+          <RefreshCw 
+            className={`w-5 h-5 text-primary ${isRefreshing ? 'animate-spin' : ''}`}
+            style={{
+              transform: isPulling ? `rotate(${pullDistance * 3}deg)` : 'rotate(0deg)',
+            }}
+          />
+          <span className="text-sm font-medium">
+            {isRefreshing ? 'Refreshing...' : isPulling && pullDistance > 80 ? 'Release to refresh' : 'Pull to refresh'}
+          </span>
+        </div>
+      </div>
+
       {/* Header with Date */}
       <div className="text-center space-y-2 border-b border-border pb-6">
         <div className="flex items-center justify-center gap-3">
