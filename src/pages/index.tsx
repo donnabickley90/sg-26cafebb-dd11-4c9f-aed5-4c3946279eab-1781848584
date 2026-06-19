@@ -186,6 +186,9 @@ export default function Home() {
 
   const moods = ["😊", "😐", "😔", "😤", "😴"];
 
+  // Generate today's date for planner link
+  const todayForPlanner = new Date().toISOString().split("T")[0];
+
   // Widget component map
   const widgetComponents: Record<string, ReactElement> = {
     "progress-summary": (
@@ -652,31 +655,48 @@ export default function Home() {
           Quick Actions
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          <Button variant="outline" className="h-auto py-3 flex flex-col gap-2">
-            <Calendar className="w-5 h-5" />
-            <span className="text-xs">Today's Planner</span>
-          </Button>
-          <Button variant="outline" className="h-auto py-3 flex flex-col gap-2">
-            <CheckCircle2 className="w-5 h-5" />
-            <span className="text-xs">Daily Reset</span>
-          </Button>
-          <Button variant="outline" className="h-auto py-3 flex flex-col gap-2">
-            <ListChecks className="w-5 h-5" />
-            <span className="text-xs">Weekly Reset</span>
-          </Button>
-          <Button variant="outline" className="h-auto py-3 flex flex-col gap-2">
-            <Plus className="w-5 h-5" />
-            <span className="text-xs">Add Task</span>
-          </Button>
-          <Button variant="outline" className="h-auto py-3 flex flex-col gap-2">
-            <Utensils className="w-5 h-5" />
-            <span className="text-xs">Add Meal</span>
-          </Button>
-          <Button variant="outline" className="h-auto py-3 flex flex-col gap-2">
-            <Cake className="w-5 h-5" />
-            <span className="text-xs">Add Birthday</span>
-          </Button>
-          <Button variant="outline" className="h-auto py-3 flex flex-col gap-2">
+          <Link href={`/daily/${todayForPlanner}`}>
+            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
+              <Calendar className="w-5 h-5" />
+              <span className="text-xs">Today's Planner</span>
+            </Button>
+          </Link>
+          <Link href="/cleaning/daily-reset">
+            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
+              <CheckCircle2 className="w-5 h-5" />
+              <span className="text-xs">Daily Reset</span>
+            </Button>
+          </Link>
+          <Link href="/cleaning/weekly-reset">
+            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
+              <ListChecks className="w-5 h-5" />
+              <span className="text-xs">Weekly Reset</span>
+            </Button>
+          </Link>
+          <Link href="/cleaning/add-task">
+            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
+              <Plus className="w-5 h-5" />
+              <span className="text-xs">Add Task</span>
+            </Button>
+          </Link>
+          <Link href="/meals">
+            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
+              <Utensils className="w-5 h-5" />
+              <span className="text-xs">Add Meal</span>
+            </Button>
+          </Link>
+          <Link href="/birthdays">
+            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
+              <Cake className="w-5 h-5" />
+              <span className="text-xs">Add Birthday</span>
+            </Button>
+          </Link>
+          <Button variant="outline" className="h-auto py-3 flex flex-col gap-2" onClick={() => {
+            const note = prompt("Enter your quick note:");
+            if (note) {
+              setQuickNote(note);
+            }
+          }}>
             <StickyNote className="w-5 h-5" />
             <span className="text-xs">Quick Note</span>
           </Button>
@@ -686,10 +706,12 @@ export default function Home() {
               <span className="text-xs">Declutter</span>
             </Button>
           </Link>
-          <Button variant="outline" className="h-auto py-3 flex flex-col gap-2">
-            <CalendarDays className="w-5 h-5" />
-            <span className="text-xs">Deep Clean</span>
-          </Button>
+          <Link href="/deep-clean">
+            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
+              <CalendarDays className="w-5 h-5" />
+              <span className="text-xs">Deep Clean</span>
+            </Button>
+          </Link>
         </div>
       </div>
 
