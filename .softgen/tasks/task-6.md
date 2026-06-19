@@ -3,9 +3,11 @@ title: Birthdays and Important Dates
 status: todo
 priority: medium
 type: feature
-tags: [birthdays, dates]
+tags:
+- birthdays
+- dates
 created_by: agent
-created_at: 2026-06-18T21:36:06Z
+created_at: 2026-06-18 21:36:06+00:00
 position: 6
 ---
 

@@ -54,6 +54,24 @@ export interface FavouriteMeal {
   ingredients: string[];
 }
 
+export interface ImportantDate {
+  id: string;
+  name: string;
+  date: string; // MM-DD format
+  year?: number; // Optional specific year (for non-recurring events)
+  category: "birthday" | "anniversary" | "holiday" | "other";
+  relationship?: string; // e.g., "Friend", "Family", "Colleague"
+  yearlyRepeat: boolean;
+  reminderEnabled: boolean;
+  reminderDays?: number; // Days before to remind (e.g., 7, 14, 30)
+  giftIdeas: string[];
+  giftPurchased: boolean;
+  messageSent: boolean;
+  cardSent: boolean;
+  notes: string;
+  createdAt: string;
+}
+
 export interface BirthdayData {
   id: string;
   name: string;
@@ -554,7 +572,7 @@ export interface DateIndicators {
 
 export const getDateIndicators = (date: string): DateIndicators => {
   return {
-    hasBirthday: getBirthdaysForDate(date).length > 0,
+    hasBirthday: getImportantDatesForDate(date).length > 0,
     hasMeal: getMeal(date) !== null,
     hasChores: getChoresForDate(date).length > 0,
     hasPlan: getDailyPlan(date) !== null,
@@ -709,4 +727,141 @@ export const getCurrentDeclutterDay = (): number | null => {
   if (diffDays > 30) return 30; // Challenge complete
   
   return diffDays;
+};
+
+// Important Dates Storage (new enhanced system)
+export const saveImportantDates = (dates: ImportantDate[]): void => {
+  localStorage.setItem("important_dates", JSON.stringify(dates));
+};
+
+export const getImportantDates = (): ImportantDate[] => {
+  const stored = localStorage.getItem("important_dates");
+  if (!stored) return [];
+  return JSON.parse(stored);
+};
+
+export const getImportantDatesByCategory = (category: ImportantDate["category"]): ImportantDate[] => {
+  return getImportantDates().filter(d => d.category === category);
+};
+
+export const getUpcomingImportantDates = (days: number = 30): ImportantDate[] => {
+  const today = new Date();
+  const dates = getImportantDates();
+  const upcoming: ImportantDate[] = [];
+  
+  dates.forEach(date => {
+    if (!date.yearlyRepeat && date.year) {
+      // Non-recurring event with specific year
+      const eventDate = new Date(date.year, parseInt(date.date.split("-")[0]) - 1, parseInt(date.date.split("-")[1]));
+      const diffTime = eventDate.getTime() - today.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays >= 0 && diffDays <= days) {
+        upcoming.push(date);
+      }
+    } else {
+      // Recurring yearly event or no specific year
+      const [month, day] = date.date.split("-").map(Number);
+      const currentYear = today.getFullYear();
+      
+      // Check this year's occurrence
+      const thisYearDate = new Date(currentYear, month - 1, day);
+      let diffTime = thisYearDate.getTime() - today.getTime();
+      let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays >= 0 && diffDays <= days) {
+        upcoming.push(date);
+      } else if (diffDays < 0) {
+        // Check next year's occurrence
+        const nextYearDate = new Date(currentYear + 1, month - 1, day);
+        diffTime = nextYearDate.getTime() - today.getTime();
+        diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays >= 0 && diffDays <= days) {
+          upcoming.push(date);
+        }
+      }
+    }
+  });
+  
+  return upcoming.sort((a, b) => {
+    const getDaysUntil = (date: ImportantDate) => {
+      const today = new Date();
+      const [month, day] = date.date.split("-").map(Number);
+      const currentYear = today.getFullYear();
+      const thisYearDate = new Date(currentYear, month - 1, day);
+      const diffTime = thisYearDate.getTime() - today.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays >= 0) return diffDays;
+      
+      const nextYearDate = new Date(currentYear + 1, month - 1, day);
+      return Math.ceil((nextYearDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    };
+    
+    return getDaysUntil(a) - getDaysUntil(b);
+  });
+};
+
+export const getDaysUntilDate = (dateStr: string, year?: number): number => {
+  const today = new Date();
+  const [month, day] = dateStr.split("-").map(Number);
+  const currentYear = today.getFullYear();
+  
+  if (year) {
+    // Specific year provided
+    const targetDate = new Date(year, month - 1, day);
+    const diffTime = targetDate.getTime() - today.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+  
+  // Check this year
+  const thisYearDate = new Date(currentYear, month - 1, day);
+  let diffTime = thisYearDate.getTime() - today.getTime();
+  let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays >= 0) return diffDays;
+  
+  // Already passed this year, return next year
+  const nextYearDate = new Date(currentYear + 1, month - 1, day);
+  return Math.ceil((nextYearDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+};
+
+export const getImportantDatesForDate = (dateStr: string): ImportantDate[] => {
+  const mmdd = dateStr.substring(5); // Extract MM-DD from YYYY-MM-DD
+  return getImportantDates().filter(d => d.date === mmdd);
+};
+
+export const addImportantDate = (date: Omit<ImportantDate, "id" | "createdAt">): void => {
+  const dates = getImportantDates();
+  const newDate: ImportantDate = {
+    ...date,
+    id: crypto.randomUUID(),
+    createdAt: new Date().toISOString(),
+  };
+  dates.push(newDate);
+  saveImportantDates(dates);
+};
+
+export const updateImportantDate = (id: string, updates: Partial<ImportantDate>): void => {
+  const dates = getImportantDates();
+  const index = dates.findIndex(d => d.id === id);
+  if (index !== -1) {
+    dates[index] = { ...dates[index], ...updates };
+    saveImportantDates(dates);
+  }
+};
+
+export const deleteImportantDate = (id: string): void => {
+  const dates = getImportantDates().filter(d => d.id !== id);
+  saveImportantDates(dates);
+};
+
+export const toggleGiftStatus = (id: string, field: "giftPurchased" | "messageSent" | "cardSent"): void => {
+  const dates = getImportantDates();
+  const date = dates.find(d => d.id === id);
+  if (date) {
+    date[field] = !date[field];
+    saveImportantDates(dates);
+  }
 };
