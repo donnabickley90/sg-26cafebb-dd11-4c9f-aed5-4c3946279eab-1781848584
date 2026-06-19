@@ -1,11 +1,14 @@
 ---
 title: 30-Day Declutter Challenge
-status: todo
+status: in_progress
 priority: low
 type: feature
-tags: [declutter, challenge, tracking]
+tags:
+- declutter
+- challenge
+- tracking
 created_by: agent
-created_at: 2026-06-18T21:36:06Z
+created_at: 2026-06-18 21:36:06+00:00
 position: 9
 ---
 
@@ -13,9 +16,9 @@ position: 9
 A gamified mini-app within the planner tracking a 30-day escalating decluttering challenge totaling 465 items.
 
 ## Checklist
-- [ ] Build the Declutter Challenge hub screen.
-- [ ] Implement an optional "Start Date" picker to anchor the 30 days.
-- [ ] Generate a day-by-day checklist from Day 1 (1 item) escalating to Day 30 (30 items).
+- [x] Build the Declutter Challenge hub screen.
+- [x] Implement an optional "Start Date" picker to anchor the 30 days.
+- [x] Generate a day-by-day checklist from Day 1 (1 item) escalating to Day 30 (30 items).
 - [ ] Add a prominent progress bar showing total items decluttered out of 465.
 - [ ] Allow marking each specific day as complete.
 - [ ] Provide a text field on each day to add notes (e.g., what was thrown out/donated).

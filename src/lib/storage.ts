@@ -126,6 +126,19 @@ export interface DeepCleanTask {
   notes?: string;
 }
 
+export interface DeclutterChallenge {
+  startDate?: string; // YYYY-MM-DD, optional anchor date
+  days: {
+    [dayNumber: string]: { // "1", "2", ..., "30"
+      completed: boolean;
+      notes: string;
+      completedDate?: string;
+    };
+  };
+  totalItems: number; // Running total of completed items
+  createdAt: string;
+}
+
 // Daily Planner Storage
 export const saveDailyPlan = (data: DailyPlannerData): void => {
   localStorage.setItem(`daily_${data.date}`, JSON.stringify(data));
@@ -573,3 +586,127 @@ function getMondayOfWeek(date: Date): string {
   d.setDate(diff);
   return d.toISOString().split("T")[0];
 }
+
+// Declutter Challenge Storage
+export const saveDeclutterChallenge = (challenge: DeclutterChallenge): void => {
+  localStorage.setItem("declutter_challenge", JSON.stringify(challenge));
+};
+
+export const getDeclutterChallenge = (): DeclutterChallenge | null => {
+  const stored = localStorage.getItem("declutter_challenge");
+  if (!stored) return null;
+  return JSON.parse(stored);
+};
+
+export const getOrCreateDeclutterChallenge = (): DeclutterChallenge => {
+  const existing = getDeclutterChallenge();
+  if (existing) return existing;
+
+  const days: DeclutterChallenge["days"] = {};
+  for (let i = 1; i <= 30; i++) {
+    days[i.toString()] = {
+      completed: false,
+      notes: "",
+    };
+  }
+
+  const newChallenge: DeclutterChallenge = {
+    days,
+    totalItems: 0,
+    createdAt: new Date().toISOString(),
+  };
+  
+  saveDeclutterChallenge(newChallenge);
+  return newChallenge;
+};
+
+export const markDeclutterDayComplete = (dayNumber: number, notes: string = ""): void => {
+  const challenge = getOrCreateDeclutterChallenge();
+  const dayKey = dayNumber.toString();
+  
+  if (!challenge.days[dayKey].completed) {
+    challenge.days[dayKey].completed = true;
+    challenge.days[dayKey].notes = notes;
+    challenge.days[dayKey].completedDate = new Date().toISOString().split("T")[0];
+    challenge.totalItems += dayNumber; // Day 1 = 1 item, Day 2 = 2 items, etc.
+  }
+  
+  saveDeclutterChallenge(challenge);
+};
+
+export const markDeclutterDayIncomplete = (dayNumber: number): void => {
+  const challenge = getOrCreateDeclutterChallenge();
+  const dayKey = dayNumber.toString();
+  
+  if (challenge.days[dayKey].completed) {
+    challenge.days[dayKey].completed = false;
+    challenge.days[dayKey].completedDate = undefined;
+    challenge.totalItems -= dayNumber; // Remove the items
+  }
+  
+  saveDeclutterChallenge(challenge);
+};
+
+export const updateDeclutterDayNotes = (dayNumber: number, notes: string): void => {
+  const challenge = getOrCreateDeclutterChallenge();
+  const dayKey = dayNumber.toString();
+  
+  challenge.days[dayKey].notes = notes;
+  saveDeclutterChallenge(challenge);
+};
+
+export const setDeclutterStartDate = (date: string): void => {
+  const challenge = getOrCreateDeclutterChallenge();
+  challenge.startDate = date;
+  saveDeclutterChallenge(challenge);
+};
+
+export const resetDeclutterChallenge = (): void => {
+  const days: DeclutterChallenge["days"] = {};
+  for (let i = 1; i <= 30; i++) {
+    days[i.toString()] = {
+      completed: false,
+      notes: "",
+    };
+  }
+
+  const newChallenge: DeclutterChallenge = {
+    days,
+    totalItems: 0,
+    createdAt: new Date().toISOString(),
+  };
+  
+  saveDeclutterChallenge(newChallenge);
+};
+
+export const getDeclutterProgress = (): { completedDays: number; totalDays: number; completedItems: number; totalItems: number; percentage: number } => {
+  const challenge = getOrCreateDeclutterChallenge();
+  const completedDays = Object.values(challenge.days).filter(d => d.completed).length;
+  const totalDays = 30;
+  const completedItems = challenge.totalItems;
+  const totalItems = 465; // Sum of 1+2+3+...+30
+  const percentage = Math.round((completedItems / totalItems) * 100);
+  
+  return {
+    completedDays,
+    totalDays,
+    completedItems,
+    totalItems,
+    percentage,
+  };
+};
+
+export const getCurrentDeclutterDay = (): number | null => {
+  const challenge = getOrCreateDeclutterChallenge();
+  if (!challenge.startDate) return null;
+  
+  const start = new Date(challenge.startDate);
+  const today = new Date();
+  const diffTime = today.getTime() - start.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  
+  if (diffDays < 1) return null;
+  if (diffDays > 30) return 30; // Challenge complete
+  
+  return diffDays;
+};

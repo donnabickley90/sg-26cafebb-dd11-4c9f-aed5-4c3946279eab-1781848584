@@ -23,7 +23,7 @@ import {
   CalendarDays,
   Home as HomeIcon
 } from "lucide-react";
-import { getTodaysMealsFromWeekly, getDeepCleanTasksForDate, completeDeepCleanTask, type DeepCleanTask } from "@/lib/storage";
+import { getTodaysMealsFromWeekly, getDeepCleanTasksForDate, completeDeepCleanTask, getDeclutterProgress, getCurrentDeclutterDay, type DeepCleanTask } from "@/lib/storage";
 import Link from "next/link";
 
 export default function Home() {
@@ -32,6 +32,8 @@ export default function Home() {
   const [spoons, setSpoons] = useState(3);
   const [todaysMeals, setTodaysMeals] = useState<{ breakfast: string; lunch: string; dinner: string; snacks: string; drinks: string } | null>(null);
   const [deepCleanTasksToday, setDeepCleanTasksToday] = useState<DeepCleanTask[]>([]);
+  const [declutterProgress, setDeclutterProgress] = useState({ completedDays: 0, totalDays: 30, completedItems: 0, totalItems: 465, percentage: 0 });
+  const [declutterCurrentDay, setDeclutterCurrentDay] = useState<number | null>(null);
 
   // Mock data for demonstration
   const today = new Date();
@@ -46,6 +48,12 @@ export default function Home() {
     
     const deepCleanTasks = getDeepCleanTasksForDate(todayStr);
     setDeepCleanTasksToday(deepCleanTasks);
+    
+    const declutterProg = getDeclutterProgress();
+    setDeclutterProgress(declutterProg);
+    
+    const currentDay = getCurrentDeclutterDay();
+    setDeclutterCurrentDay(currentDay);
   }, [todayStr]);
 
   const handleCompleteDeepClean = (taskId: string) => {
@@ -131,10 +139,12 @@ export default function Home() {
             <StickyNote className="w-5 h-5" />
             <span className="text-xs">Quick Note</span>
           </Button>
-          <Button variant="outline" className="h-auto py-3 flex flex-col gap-2">
-            <Sparkles className="w-5 h-5" />
-            <span className="text-xs">Declutter</span>
-          </Button>
+          <Link href="/declutter">
+            <Button variant="outline" className="h-auto py-3 flex flex-col gap-2 w-full">
+              <Sparkles className="w-5 h-5" />
+              <span className="text-xs">Declutter</span>
+            </Button>
+          </Link>
           <Button variant="outline" className="h-auto py-3 flex flex-col gap-2">
             <CalendarDays className="w-5 h-5" />
             <span className="text-xs">Deep Clean</span>
@@ -337,6 +347,48 @@ export default function Home() {
                   </div>
                 ))
               )}
+            </div>
+          </ThemedCardContent>
+        </ThemedCard>
+
+        {/* Declutter Challenge Widget */}
+        <ThemedCard variant="glow">
+          <ThemedCardHeader>
+            <ThemedCardTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-accent" />
+              Declutter Challenge
+            </ThemedCardTitle>
+            <ThemedCardDescription>30-day item clearing challenge</ThemedCardDescription>
+          </ThemedCardHeader>
+          <ThemedCardContent>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold">{declutterProgress.completedItems}/{declutterProgress.totalItems}</p>
+                  <p className="text-xs text-muted-foreground">Items cleared</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold">{declutterProgress.completedDays}/30</p>
+                  <p className="text-xs text-muted-foreground">Days completed</p>
+                </div>
+              </div>
+              
+              <Progress value={declutterProgress.percentage} className="h-2" />
+              
+              {declutterCurrentDay && (
+                <div className="flex items-center gap-2 p-2 rounded-lg bg-accent/10 border border-accent/20">
+                  <Star className="w-4 h-4 text-accent" />
+                  <p className="text-sm">
+                    Currently on <span className="font-semibold">Day {declutterCurrentDay}</span>
+                  </p>
+                </div>
+              )}
+              
+              <Link href="/declutter">
+                <Button variant="outline" size="sm" className="w-full">
+                  View Challenge
+                </Button>
+              </Link>
             </div>
           </ThemedCardContent>
         </ThemedCard>
