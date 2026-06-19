@@ -1,6 +1,6 @@
 ---
 title: Birthdays and Important Dates
-status: in_progress
+status: done
 priority: medium
 type: feature
 tags:
