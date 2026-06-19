@@ -22,6 +22,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Sparkles,
+  ShoppingBasket,
 } from "lucide-react";
 import {
   WeeklyMealPlan,
@@ -207,6 +208,21 @@ export default function MealsPage() {
     handleMealChange(day, mealType, meal.name);
   };
 
+  const handleAddMealToGroceryList = (mealText: string) => {
+    if (!mealText.trim()) return;
+    
+    const newItem: GroceryItem = {
+      id: Date.now().toString(),
+      text: mealText,
+      checked: false,
+      addedAt: new Date().toISOString(),
+    };
+    
+    const updated = [...groceryList, newItem];
+    setGroceryList(updated);
+    saveGroceryList(updated);
+  };
+
   return (
     <div className="space-y-6 pb-8">
       {/* Header */}
@@ -276,43 +292,108 @@ export default function MealsPage() {
                   <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Breakfast</Label>
-                      <Input
-                        value={weeklyPlan.meals[key]?.breakfast || ""}
-                        onChange={(e) => handleMealChange(key, "breakfast", e.target.value)}
-                        placeholder="e.g., Oatmeal with berries"
-                      />
+                      <div className="flex gap-2">
+                        <Input
+                          value={weeklyPlan.meals[key]?.breakfast || ""}
+                          onChange={(e) => handleMealChange(key, "breakfast", e.target.value)}
+                          placeholder="e.g., Oatmeal with berries"
+                          className="flex-1"
+                        />
+                        {weeklyPlan.meals[key]?.breakfast && (
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => handleAddMealToGroceryList(weeklyPlan.meals[key].breakfast)}
+                            title="Add to grocery list"
+                          >
+                            <ShoppingBasket className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Lunch</Label>
-                      <Input
-                        value={weeklyPlan.meals[key]?.lunch || ""}
-                        onChange={(e) => handleMealChange(key, "lunch", e.target.value)}
-                        placeholder="e.g., Chicken salad"
-                      />
+                      <div className="flex gap-2">
+                        <Input
+                          value={weeklyPlan.meals[key]?.lunch || ""}
+                          onChange={(e) => handleMealChange(key, "lunch", e.target.value)}
+                          placeholder="e.g., Chicken salad"
+                          className="flex-1"
+                        />
+                        {weeklyPlan.meals[key]?.lunch && (
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => handleAddMealToGroceryList(weeklyPlan.meals[key].lunch)}
+                            title="Add to grocery list"
+                          >
+                            <ShoppingBasket className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Dinner</Label>
-                      <Input
-                        value={weeklyPlan.meals[key]?.dinner || ""}
-                        onChange={(e) => handleMealChange(key, "dinner", e.target.value)}
-                        placeholder="e.g., Pasta with vegetables"
-                      />
+                      <div className="flex gap-2">
+                        <Input
+                          value={weeklyPlan.meals[key]?.dinner || ""}
+                          onChange={(e) => handleMealChange(key, "dinner", e.target.value)}
+                          placeholder="e.g., Pasta with vegetables"
+                          className="flex-1"
+                        />
+                        {weeklyPlan.meals[key]?.dinner && (
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => handleAddMealToGroceryList(weeklyPlan.meals[key].dinner)}
+                            title="Add to grocery list"
+                          >
+                            <ShoppingBasket className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Snacks</Label>
-                      <Input
-                        value={weeklyPlan.meals[key]?.snacks || ""}
-                        onChange={(e) => handleMealChange(key, "snacks", e.target.value)}
-                        placeholder="e.g., Apple, nuts"
-                      />
+                      <div className="flex gap-2">
+                        <Input
+                          value={weeklyPlan.meals[key]?.snacks || ""}
+                          onChange={(e) => handleMealChange(key, "snacks", e.target.value)}
+                          placeholder="e.g., Apple, nuts"
+                          className="flex-1"
+                        />
+                        {weeklyPlan.meals[key]?.snacks && (
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => handleAddMealToGroceryList(weeklyPlan.meals[key].snacks)}
+                            title="Add to grocery list"
+                          >
+                            <ShoppingBasket className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Drinks/Shakes</Label>
-                      <Input
-                        value={weeklyPlan.meals[key]?.drinks || ""}
-                        onChange={(e) => handleMealChange(key, "drinks", e.target.value)}
-                        placeholder="e.g., Protein shake"
-                      />
+                      <div className="flex gap-2">
+                        <Input
+                          value={weeklyPlan.meals[key]?.drinks || ""}
+                          onChange={(e) => handleMealChange(key, "drinks", e.target.value)}
+                          placeholder="e.g., Protein shake"
+                          className="flex-1"
+                        />
+                        {weeklyPlan.meals[key]?.drinks && (
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => handleAddMealToGroceryList(weeklyPlan.meals[key].drinks)}
+                            title="Add to grocery list"
+                          >
+                            <ShoppingBasket className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </ThemedCardContent>

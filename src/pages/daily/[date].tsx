@@ -23,7 +23,7 @@ import {
 import {
   getOrCreateDailyPlan,
   saveDailyPlan,
-  getMeal,
+  getTodaysMealsFromWeekly,
   getChoresForDate,
   getBirthdaysForDate,
   type DailyPlannerData,
@@ -121,7 +121,7 @@ export default function DailyPlannerPage() {
     };
   });
 
-  const mealData = getMeal(dateStr);
+  const mealsData = getTodaysMealsFromWeekly(dateStr);
   const choresData = getChoresForDate(dateStr);
   const birthdaysData = getBirthdaysForDate(dateStr);
 
@@ -261,29 +261,44 @@ export default function DailyPlannerPage() {
               </Card>
             )}
 
-            {mealData && (
+            {mealsData && (
               <Card className="p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <UtensilsCrossed className="h-5 w-5 text-accent" />
                   <h2 className="text-xl font-bold">Today's Meals</h2>
                 </div>
                 <div className="space-y-2 text-sm">
-                  {mealData.breakfast && (
+                  {mealsData.breakfast && (
                     <div>
-                      <span className="font-semibold">Breakfast:</span> {mealData.breakfast}
+                      <span className="font-semibold">Breakfast:</span> {mealsData.breakfast}
                     </div>
                   )}
-                  {mealData.lunch && (
+                  {mealsData.lunch && (
                     <div>
-                      <span className="font-semibold">Lunch:</span> {mealData.lunch}
+                      <span className="font-semibold">Lunch:</span> {mealsData.lunch}
                     </div>
                   )}
-                  {mealData.dinner && (
+                  {mealsData.dinner && (
                     <div>
-                      <span className="font-semibold">Dinner:</span> {mealData.dinner}
+                      <span className="font-semibold">Dinner:</span> {mealsData.dinner}
+                    </div>
+                  )}
+                  {mealsData.snacks && (
+                    <div>
+                      <span className="font-semibold">Snacks:</span> {mealsData.snacks}
+                    </div>
+                  )}
+                  {mealsData.drinks && (
+                    <div>
+                      <span className="font-semibold">Drinks:</span> {mealsData.drinks}
                     </div>
                   )}
                 </div>
+                <Link href="/meals">
+                  <Button variant="outline" size="sm" className="mt-3 w-full">
+                    Edit Meals
+                  </Button>
+                </Link>
               </Card>
             )}
 

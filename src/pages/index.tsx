@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThemedCard, ThemedCardHeader, ThemedCardTitle, ThemedCardDescription, ThemedCardContent } from "@/components/ui/themed-card";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { Progress } from "@/components/ui/progress";
@@ -23,28 +23,32 @@ import {
   CalendarDays,
   Home as HomeIcon
 } from "lucide-react";
+import { getTodaysMealsFromWeekly } from "@/lib/storage";
+import Link from "next/link";
 
 export default function Home() {
   const [quickNote, setQuickNote] = useState("");
   const [mood, setMood] = useState<string | null>(null);
   const [spoons, setSpoons] = useState(3);
+  const [todaysMeals, setTodaysMeals] = useState<{ breakfast: string; lunch: string; dinner: string; snacks: string; drinks: string } | null>(null);
 
   // Mock data for demonstration
   const today = new Date();
+  const todayStr = today.toISOString().split("T")[0];
   const dayName = today.toLocaleDateString("en-US", { weekday: "long" });
   const dateString = today.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+
+  // Load today's meals on mount
+  useEffect(() => {
+    const meals = getTodaysMealsFromWeekly(todayStr);
+    setTodaysMeals(meals);
+  }, [todayStr]);
 
   const upcomingHours = [
     { time: "9:00 AM", task: "Morning routine & coffee", status: "done" },
     { time: "10:00 AM", task: "Deep work session", status: "current" },
     { time: "11:00 AM", task: "Team sync", status: "pending" },
     { time: "12:00 PM", task: "Lunch break", status: "pending" },
-  ];
-
-  const todaysMeals = [
-    { meal: "Breakfast", planned: "Avocado toast & smoothie" },
-    { meal: "Lunch", planned: "Leftover pasta" },
-    { meal: "Dinner", planned: "Teriyaki chicken bowl" },
   ];
 
   const choresForToday = [
@@ -211,14 +215,59 @@ export default function Home() {
             <ThemedCardDescription>What's on the menu</ThemedCardDescription>
           </ThemedCardHeader>
           <ThemedCardContent>
-            <div className="space-y-3">
-              {todaysMeals.map((meal, idx) => (
-                <div key={idx} className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                  <Badge variant="outline" className="min-w-[90px]">{meal.meal}</Badge>
-                  <div className="text-sm">{meal.planned}</div>
-                </div>
-              ))}
-            </div>
+            {todaysMeals ? (
+              <div className="space-y-3">
+                {todaysMeals.breakfast && (
+                  <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                    <Badge variant="outline" className="min-w-[90px]">Breakfast</Badge>
+                    <div className="text-sm">{todaysMeals.breakfast}</div>
+                  </div>
+                )}
+                {todaysMeals.lunch && (
+                  <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                    <Badge variant="outline" className="min-w-[90px]">Lunch</Badge>
+                    <div className="text-sm">{todaysMeals.lunch}</div>
+                  </div>
+                )}
+                {todaysMeals.dinner && (
+                  <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                    <Badge variant="outline" className="min-w-[90px]">Dinner</Badge>
+                    <div className="text-sm">{todaysMeals.dinner}</div>
+                  </div>
+                )}
+                {todaysMeals.snacks && (
+                  <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                    <Badge variant="outline" className="min-w-[90px]">Snacks</Badge>
+                    <div className="text-sm">{todaysMeals.snacks}</div>
+                  </div>
+                )}
+                {todaysMeals.drinks && (
+                  <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+                    <Badge variant="outline" className="min-w-[90px]">Drinks</Badge>
+                    <div className="text-sm">{todaysMeals.drinks}</div>
+                  </div>
+                )}
+                {!todaysMeals.breakfast && !todaysMeals.lunch && !todaysMeals.dinner && !todaysMeals.snacks && !todaysMeals.drinks && (
+                  <div className="text-center py-4">
+                    <p className="text-muted-foreground text-sm">No meals planned for today</p>
+                    <Link href="/meals">
+                      <Button variant="outline" size="sm" className="mt-2">
+                        Plan Meals
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground text-sm">No meals planned for today</p>
+                <Link href="/meals">
+                  <Button variant="outline" size="sm" className="mt-2">
+                    Plan Meals
+                  </Button>
+                </Link>
+              </div>
+            )}
           </ThemedCardContent>
         </ThemedCard>
 

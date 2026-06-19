@@ -238,3 +238,28 @@ export const getDateIndicators = (date: string): DateIndicators => {
     hasNotes: getDailyPlan(date)?.notes ? true : false,
   };
 };
+
+// Get today's meals from the current week's meal plan
+export const getTodaysMealsFromWeekly = (today: string): { breakfast: string; lunch: string; dinner: string; snacks: string; drinks: string } | null => {
+  const dayOfWeek = new Date(today).getDay();
+  const dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+  const dayKey = dayNames[dayOfWeek];
+  
+  const weekStart = getMondayOfWeek(new Date(today));
+  const weeklyPlan = getWeeklyMealPlan(weekStart);
+  
+  if (weeklyPlan && weeklyPlan.meals[dayKey]) {
+    return weeklyPlan.meals[dayKey];
+  }
+  
+  return null;
+};
+
+// Helper to get Monday of current week
+function getMondayOfWeek(date: Date): string {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  d.setDate(diff);
+  return d.toISOString().split("T")[0];
+}
