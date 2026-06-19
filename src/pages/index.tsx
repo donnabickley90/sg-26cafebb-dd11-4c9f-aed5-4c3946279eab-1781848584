@@ -21,7 +21,7 @@ import {
   Moon,
   ListChecks,
   CalendarDays,
-  Home
+  Home as HomeIcon
 } from "lucide-react";
 
 export default function Home() {
@@ -236,7 +236,7 @@ export default function Home() {
               {choresForToday.map((chore, idx) => (
                 <div key={idx} className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
                   <input type="checkbox" checked={chore.done} readOnly className="w-4 h-4" />
-                  <Home className="w-4 h-4 text-muted-foreground" />
+                  <HomeIcon className="w-4 h-4 text-muted-foreground" />
                   <div className="flex-1">
                     <p className="text-sm font-medium">{chore.room}</p>
                     <p className="text-xs text-muted-foreground">{chore.task}</p>
