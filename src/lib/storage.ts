@@ -1,5 +1,8 @@
 // Local storage utilities for Kitten's 2026 Chaos Planner
 
+// SSR safety check
+const isClient = typeof window !== "undefined";
+
 export interface DailyPlannerData {
   date: string; // YYYY-MM-DD
   hourlyBlocks: {
@@ -159,16 +162,38 @@ export interface DeclutterChallenge {
 
 // Daily Planner Storage
 export const saveDailyPlan = (data: DailyPlannerData): void => {
+  if (!isClient) return;
   localStorage.setItem(`daily_${data.date}`, JSON.stringify(data));
 };
 
 export const getDailyPlan = (date: string): DailyPlannerData | null => {
+  if (!isClient) return null;
   const stored = localStorage.getItem(`daily_${date}`);
   if (!stored) return null;
   return JSON.parse(stored);
 };
 
 export const getOrCreateDailyPlan = (date: string): DailyPlannerData => {
+  if (!isClient) {
+    const hours = Array.from({ length: 19 }, (_, i) => i + 5);
+    const hourlyBlocks: DailyPlannerData["hourlyBlocks"] = {};
+    hours.forEach((h) => {
+      const hour = h.toString().padStart(2, "0");
+      hourlyBlocks[`${hour}:00`] = { task: "", completed: false };
+    });
+    return {
+      date,
+      hourlyBlocks,
+      priorities: ["", "", ""],
+      notes: "",
+      mood: "",
+      energy: 3,
+      dailyReminder: "",
+      brainDump: "",
+      tomorrowReminder: "",
+    };
+  }
+  
   const existing = getDailyPlan(date);
   if (existing) return existing;
 
@@ -194,10 +219,12 @@ export const getOrCreateDailyPlan = (date: string): DailyPlannerData => {
 
 // Meals Storage
 export const saveMeal = (data: MealData): void => {
+  if (!isClient) return;
   localStorage.setItem(`meal_${data.date}`, JSON.stringify(data));
 };
 
 export const getMeal = (date: string): MealData | null => {
+  if (!isClient) return null;
   const stored = localStorage.getItem(`meal_${date}`);
   if (!stored) return null;
   return JSON.parse(stored);
@@ -205,16 +232,27 @@ export const getMeal = (date: string): MealData | null => {
 
 // Weekly Meal Plan Storage
 export const saveWeeklyMealPlan = (plan: WeeklyMealPlan): void => {
+  if (!isClient) return;
   localStorage.setItem(`weekly_meal_${plan.weekStart}`, JSON.stringify(plan));
 };
 
 export const getWeeklyMealPlan = (weekStart: string): WeeklyMealPlan | null => {
+  if (!isClient) return null;
   const stored = localStorage.getItem(`weekly_meal_${weekStart}`);
   if (!stored) return null;
   return JSON.parse(stored);
 };
 
 export const getOrCreateWeeklyMealPlan = (weekStart: string): WeeklyMealPlan => {
+  if (!isClient) {
+    const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+    const meals: WeeklyMealPlan["meals"] = {};
+    days.forEach(day => {
+      meals[day] = { breakfast: "", lunch: "", dinner: "", snacks: "", drinks: "" };
+    });
+    return { weekStart, meals, notes: "" };
+  }
+  
   const existing = getWeeklyMealPlan(weekStart);
   if (existing) return existing;
 
@@ -240,6 +278,7 @@ export const getOrCreateWeeklyMealPlan = (weekStart: string): WeeklyMealPlan => 
 
 // Get all weekly meal plans for history
 export const getAllWeeklyMealPlans = (): WeeklyMealPlan[] => {
+  if (!isClient) return [];
   const plans: WeeklyMealPlan[] = [];
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
@@ -253,10 +292,12 @@ export const getAllWeeklyMealPlans = (): WeeklyMealPlan[] => {
 
 // Grocery List Storage
 export const saveGroceryList = (items: GroceryItem[]): void => {
+  if (!isClient) return;
   localStorage.setItem("grocery_list", JSON.stringify(items));
 };
 
 export const getGroceryList = (): GroceryItem[] => {
+  if (!isClient) return [];
   const stored = localStorage.getItem("grocery_list");
   if (!stored) return [];
   return JSON.parse(stored);
@@ -264,10 +305,12 @@ export const getGroceryList = (): GroceryItem[] => {
 
 // Favourite Meals Storage
 export const saveFavouriteMeals = (meals: FavouriteMeal[]): void => {
+  if (!isClient) return;
   localStorage.setItem("favourite_meals", JSON.stringify(meals));
 };
 
 export const getFavouriteMeals = (): FavouriteMeal[] => {
+  if (!isClient) return [];
   const stored = localStorage.getItem("favourite_meals");
   if (!stored) return [];
   return JSON.parse(stored);
@@ -275,16 +318,19 @@ export const getFavouriteMeals = (): FavouriteMeal[] => {
 
 // Birthdays Storage
 export const saveBirthdays = (birthdays: BirthdayData[]): void => {
+  if (!isClient) return;
   localStorage.setItem("birthdays", JSON.stringify(birthdays));
 };
 
 export const getBirthdays = (): BirthdayData[] => {
+  if (!isClient) return [];
   const stored = localStorage.getItem("birthdays");
   if (!stored) return [];
   return JSON.parse(stored);
 };
 
 export const getBirthdaysForDate = (date: string): BirthdayData[] => {
+  if (!isClient) return [];
   const allBirthdays = getBirthdays();
   const mmdd = date.substring(5); // Extract MM-DD from YYYY-MM-DD
   return allBirthdays.filter((b) => b.date === mmdd);
@@ -292,26 +338,31 @@ export const getBirthdaysForDate = (date: string): BirthdayData[] => {
 
 // Chores Storage
 export const saveChores = (chores: ChoreData[]): void => {
+  if (!isClient) return;
   localStorage.setItem("chores", JSON.stringify(chores));
 };
 
 export const getChores = (): ChoreData[] => {
+  if (!isClient) return [];
   const stored = localStorage.getItem("chores");
   if (!stored) return [];
   return JSON.parse(stored);
 };
 
 export const getChoresForDate = (date: string): ChoreData[] => {
+  if (!isClient) return [];
   const allChores = getChores();
   return allChores.filter((c) => c.nextDue === date);
 };
 
 // Deep Clean Tasks Storage
 export const saveDeepCleanTasks = (tasks: DeepCleanTask[]): void => {
+  if (!isClient) return;
   localStorage.setItem("deep_clean_tasks", JSON.stringify(tasks));
 };
 
 export const getDeepCleanTasks = (): DeepCleanTask[] => {
+  if (!isClient) return [];
   const stored = localStorage.getItem("deep_clean_tasks");
   if (!stored) {
     // Initialize with default tasks
@@ -334,18 +385,22 @@ export const getDeepCleanTasks = (): DeepCleanTask[] => {
 };
 
 export const getUnscheduledDeepCleanTasks = (): DeepCleanTask[] => {
+  if (!isClient) return [];
   return getDeepCleanTasks().filter(task => !task.scheduledDate && !task.completed);
 };
 
 export const getScheduledDeepCleanTasks = (): DeepCleanTask[] => {
+  if (!isClient) return [];
   return getDeepCleanTasks().filter(task => task.scheduledDate && !task.completed);
 };
 
 export const getDeepCleanTasksForDate = (date: string): DeepCleanTask[] => {
+  if (!isClient) return [];
   return getDeepCleanTasks().filter(task => task.scheduledDate === date && !task.completed);
 };
 
 export const getOverdueDeepCleanTasks = (): DeepCleanTask[] => {
+  if (!isClient) return [];
   const today = new Date().toISOString().split("T")[0];
   return getDeepCleanTasks().filter(
     task => task.scheduledDate && task.scheduledDate < today && !task.completed
@@ -353,6 +408,7 @@ export const getOverdueDeepCleanTasks = (): DeepCleanTask[] => {
 };
 
 export const scheduleDeepCleanTask = (taskId: string, date: string): void => {
+  if (!isClient) return;
   const tasks = getDeepCleanTasks();
   const task = tasks.find(t => t.id === taskId);
   if (task) {
@@ -362,6 +418,7 @@ export const scheduleDeepCleanTask = (taskId: string, date: string): void => {
 };
 
 export const completeDeepCleanTask = (taskId: string): void => {
+  if (!isClient) return;
   const tasks = getDeepCleanTasks();
   const task = tasks.find(t => t.id === taskId);
   if (task) {
@@ -372,6 +429,7 @@ export const completeDeepCleanTask = (taskId: string): void => {
 };
 
 export const addDeepCleanTask = (task: string, room: string): void => {
+  if (!isClient) return;
   const tasks = getDeepCleanTasks();
   tasks.push({
     id: crypto.randomUUID(),
@@ -383,6 +441,7 @@ export const addDeepCleanTask = (task: string, room: string): void => {
 };
 
 export const deleteDeepCleanTask = (taskId: string): void => {
+  if (!isClient) return;
   const tasks = getDeepCleanTasks().filter(t => t.id !== taskId);
   saveDeepCleanTasks(tasks);
 };
@@ -390,24 +449,29 @@ export const deleteDeepCleanTask = (taskId: string): void => {
 // Chaos Cleaner Storage Functions
 
 export const saveCleaningTasks = (tasks: CleaningTask[]): void => {
+  if (!isClient) return;
   localStorage.setItem("cleaning_tasks", JSON.stringify(tasks));
 };
 
 export const getCleaningTasks = (): CleaningTask[] => {
+  if (!isClient) return [];
   const stored = localStorage.getItem("cleaning_tasks");
   if (!stored) return [];
   return JSON.parse(stored);
 };
 
 export const getCleaningTasksByRoom = (room: string): CleaningTask[] => {
+  if (!isClient) return [];
   return getCleaningTasks().filter(task => task.room === room);
 };
 
 export const getCleaningTasksByFrequency = (frequency: CleaningTask["frequency"]): CleaningTask[] => {
+  if (!isClient) return [];
   return getCleaningTasks().filter(task => task.frequency === frequency);
 };
 
 export const getDailyTasksDueToday = (): CleaningTask[] => {
+  if (!isClient) return [];
   const today = new Date().toISOString().split("T")[0];
   return getCleaningTasks().filter(task => 
     task.frequency === "daily" && (!task.lastCompleted || task.lastCompleted !== today)
@@ -415,6 +479,7 @@ export const getDailyTasksDueToday = (): CleaningTask[] => {
 };
 
 export const getWeeklyTasksDueThisWeek = (): CleaningTask[] => {
+  if (!isClient) return [];
   const tasks = getCleaningTasks();
   const today = new Date();
   const weekStart = getMondayOfWeek(today);
@@ -429,6 +494,7 @@ export const getWeeklyTasksDueThisWeek = (): CleaningTask[] => {
 };
 
 export const completeCleaningTask = (taskId: string): void => {
+  if (!isClient) return;
   const tasks = getCleaningTasks();
   const task = tasks.find(t => t.id === taskId);
   if (!task) return;
@@ -476,6 +542,7 @@ export const completeCleaningTask = (taskId: string): void => {
 };
 
 export const addCleaningTask = (task: Omit<CleaningTask, "id" | "createdAt">): void => {
+  if (!isClient) return;
   const tasks = getCleaningTasks();
   const newTask: CleaningTask = {
     ...task,
@@ -487,11 +554,15 @@ export const addCleaningTask = (task: Omit<CleaningTask, "id" | "createdAt">): v
 };
 
 export const deleteCleaningTask = (taskId: string): void => {
+  if (!isClient) return;
   const tasks = getCleaningTasks().filter(t => t.id !== taskId);
   saveCleaningTasks(tasks);
 };
 
 export const getRoomProgress = (room: string): RoomProgress => {
+  if (!isClient) {
+    return { room, dailyComplete: 0, dailyTotal: 0, weeklyComplete: 0, weeklyTotal: 0, monthlyComplete: 0, monthlyTotal: 0, deepComplete: 0, deepTotal: 0 };
+  }
   const tasks = getCleaningTasksByRoom(room);
   const today = new Date().toISOString().split("T")[0];
   const weekStart = getMondayOfWeek(new Date());
@@ -515,10 +586,12 @@ export const getRoomProgress = (room: string): RoomProgress => {
 };
 
 export const getAllRoomsProgress = (): RoomProgress[] => {
+  if (!isClient) return [];
   return PREDEFINED_ROOMS.map(room => getRoomProgress(room));
 };
 
 export const getTodaysCleaningProgress = (): { complete: number; total: number; percentage: number } => {
+  if (!isClient) return { complete: 0, total: 0, percentage: 0 };
   const dailyTasks = getDailyTasksDueToday();
   const today = new Date().toISOString().split("T")[0];
   const completed = getCleaningTasks().filter(t => 
@@ -534,10 +607,12 @@ export const getTodaysCleaningProgress = (): { complete: number; total: number; 
 
 // Cleaning Streak Storage
 export const saveCleaningStreak = (streak: CleaningStreak): void => {
+  if (!isClient) return;
   localStorage.setItem("cleaning_streak", JSON.stringify(streak));
 };
 
 export const getCleaningStreak = (): CleaningStreak => {
+  if (!isClient) return { current: 0, longest: 0 };
   const stored = localStorage.getItem("cleaning_streak");
   if (!stored) {
     return { current: 0, longest: 0 };
@@ -547,6 +622,7 @@ export const getCleaningStreak = (): CleaningStreak => {
 
 // Reset daily tasks (called automatically or manually)
 export const resetDailyTasks = (): void => {
+  if (!isClient) return;
   const tasks = getCleaningTasks();
   const today = new Date().toISOString().split("T")[0];
   
@@ -571,6 +647,9 @@ export interface DateIndicators {
 }
 
 export const getDateIndicators = (date: string): DateIndicators => {
+  if (!isClient) {
+    return { hasBirthday: false, hasMeal: false, hasChores: false, hasPlan: false, hasNotes: false };
+  }
   return {
     hasBirthday: getImportantDatesForDate(date).length > 0,
     hasMeal: getMeal(date) !== null,
@@ -582,6 +661,7 @@ export const getDateIndicators = (date: string): DateIndicators => {
 
 // Get today's meals from the current week's meal plan
 export const getTodaysMealsFromWeekly = (today: string): { breakfast: string; lunch: string; dinner: string; snacks: string; drinks: string } | null => {
+  if (!isClient) return null;
   const dayOfWeek = new Date(today).getDay();
   const dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
   const dayKey = dayNames[dayOfWeek];
@@ -607,16 +687,26 @@ function getMondayOfWeek(date: Date): string {
 
 // Declutter Challenge Storage
 export const saveDeclutterChallenge = (challenge: DeclutterChallenge): void => {
+  if (!isClient) return;
   localStorage.setItem("declutter_challenge", JSON.stringify(challenge));
 };
 
 export const getDeclutterChallenge = (): DeclutterChallenge | null => {
+  if (!isClient) return null;
   const stored = localStorage.getItem("declutter_challenge");
   if (!stored) return null;
   return JSON.parse(stored);
 };
 
 export const getOrCreateDeclutterChallenge = (): DeclutterChallenge => {
+  if (!isClient) {
+    const days: DeclutterChallenge["days"] = {};
+    for (let i = 1; i <= 30; i++) {
+      days[i.toString()] = { completed: false, notes: "" };
+    }
+    return { days, totalItems: 0, createdAt: new Date().toISOString() };
+  }
+  
   const existing = getDeclutterChallenge();
   if (existing) return existing;
 
@@ -639,6 +729,7 @@ export const getOrCreateDeclutterChallenge = (): DeclutterChallenge => {
 };
 
 export const markDeclutterDayComplete = (dayNumber: number, notes: string = ""): void => {
+  if (!isClient) return;
   const challenge = getOrCreateDeclutterChallenge();
   const dayKey = dayNumber.toString();
   
@@ -653,6 +744,7 @@ export const markDeclutterDayComplete = (dayNumber: number, notes: string = ""):
 };
 
 export const markDeclutterDayIncomplete = (dayNumber: number): void => {
+  if (!isClient) return;
   const challenge = getOrCreateDeclutterChallenge();
   const dayKey = dayNumber.toString();
   
@@ -666,6 +758,7 @@ export const markDeclutterDayIncomplete = (dayNumber: number): void => {
 };
 
 export const updateDeclutterDayNotes = (dayNumber: number, notes: string): void => {
+  if (!isClient) return;
   const challenge = getOrCreateDeclutterChallenge();
   const dayKey = dayNumber.toString();
   
@@ -674,12 +767,14 @@ export const updateDeclutterDayNotes = (dayNumber: number, notes: string): void 
 };
 
 export const setDeclutterStartDate = (date: string): void => {
+  if (!isClient) return;
   const challenge = getOrCreateDeclutterChallenge();
   challenge.startDate = date;
   saveDeclutterChallenge(challenge);
 };
 
 export const resetDeclutterChallenge = (): void => {
+  if (!isClient) return;
   const days: DeclutterChallenge["days"] = {};
   for (let i = 1; i <= 30; i++) {
     days[i.toString()] = {
@@ -698,6 +793,9 @@ export const resetDeclutterChallenge = (): void => {
 };
 
 export const getDeclutterProgress = (): { completedDays: number; totalDays: number; completedItems: number; totalItems: number; percentage: number } => {
+  if (!isClient) {
+    return { completedDays: 0, totalDays: 30, completedItems: 0, totalItems: 465, percentage: 0 };
+  }
   const challenge = getOrCreateDeclutterChallenge();
   const completedDays = Object.values(challenge.days).filter(d => d.completed).length;
   const totalDays = 30;
@@ -715,6 +813,7 @@ export const getDeclutterProgress = (): { completedDays: number; totalDays: numb
 };
 
 export const getCurrentDeclutterDay = (): number | null => {
+  if (!isClient) return null;
   const challenge = getOrCreateDeclutterChallenge();
   if (!challenge.startDate) return null;
   
@@ -731,20 +830,24 @@ export const getCurrentDeclutterDay = (): number | null => {
 
 // Important Dates Storage (new enhanced system)
 export const saveImportantDates = (dates: ImportantDate[]): void => {
+  if (!isClient) return;
   localStorage.setItem("important_dates", JSON.stringify(dates));
 };
 
 export const getImportantDates = (): ImportantDate[] => {
+  if (!isClient) return [];
   const stored = localStorage.getItem("important_dates");
   if (!stored) return [];
   return JSON.parse(stored);
 };
 
 export const getImportantDatesByCategory = (category: ImportantDate["category"]): ImportantDate[] => {
+  if (!isClient) return [];
   return getImportantDates().filter(d => d.category === category);
 };
 
 export const getUpcomingImportantDates = (days: number = 30): ImportantDate[] => {
+  if (!isClient) return [];
   const today = new Date();
   const dates = getImportantDates();
   const upcoming: ImportantDate[] = [];
@@ -804,6 +907,7 @@ export const getUpcomingImportantDates = (days: number = 30): ImportantDate[] =>
 };
 
 export const getDaysUntilDate = (dateStr: string, year?: number): number => {
+  if (!isClient) return 0;
   const today = new Date();
   const [month, day] = dateStr.split("-").map(Number);
   const currentYear = today.getFullYear();
@@ -828,11 +932,13 @@ export const getDaysUntilDate = (dateStr: string, year?: number): number => {
 };
 
 export const getImportantDatesForDate = (dateStr: string): ImportantDate[] => {
+  if (!isClient) return [];
   const mmdd = dateStr.substring(5); // Extract MM-DD from YYYY-MM-DD
   return getImportantDates().filter(d => d.date === mmdd);
 };
 
 export const addImportantDate = (date: Omit<ImportantDate, "id" | "createdAt">): void => {
+  if (!isClient) return;
   const dates = getImportantDates();
   const newDate: ImportantDate = {
     ...date,
@@ -844,6 +950,7 @@ export const addImportantDate = (date: Omit<ImportantDate, "id" | "createdAt">):
 };
 
 export const updateImportantDate = (id: string, updates: Partial<ImportantDate>): void => {
+  if (!isClient) return;
   const dates = getImportantDates();
   const index = dates.findIndex(d => d.id === id);
   if (index !== -1) {
@@ -853,11 +960,13 @@ export const updateImportantDate = (id: string, updates: Partial<ImportantDate>)
 };
 
 export const deleteImportantDate = (id: string): void => {
+  if (!isClient) return;
   const dates = getImportantDates().filter(d => d.id !== id);
   saveImportantDates(dates);
 };
 
 export const toggleGiftStatus = (id: string, field: "giftPurchased" | "messageSent" | "cardSent"): void => {
+  if (!isClient) return;
   const dates = getImportantDates();
   const date = dates.find(d => d.id === id);
   if (date) {

@@ -56,8 +56,8 @@ function formatWeekDisplay(weekStart: string): string {
 }
 
 export default function MealsPage() {
-  const [currentWeekStart, setCurrentWeekStart] = useState<string>(() => getMondayOfWeek(new Date()));
-  const [weeklyPlan, setWeeklyPlan] = useState<WeeklyMealPlan>(() => getOrCreateWeeklyMealPlan(getMondayOfWeek(new Date())));
+  const [currentWeekStart, setCurrentWeekStart] = useState<string>("");
+  const [weeklyPlan, setWeeklyPlan] = useState<WeeklyMealPlan | null>(null);
   const [groceryList, setGroceryList] = useState<GroceryItem[]>([]);
   const [favouriteMeals, setFavouriteMeals] = useState<FavouriteMeal[]>([]);
   const [newGroceryItem, setNewGroceryItem] = useState("");
@@ -74,17 +74,34 @@ export default function MealsPage() {
     { key: "sunday", label: "Sunday" },
   ];
 
-  // Load data on mount
+  // Load data on mount - SSR-safe
   useEffect(() => {
+    const mondayStr = getMondayOfWeek(new Date());
+    setCurrentWeekStart(mondayStr);
+    setWeeklyPlan(getOrCreateWeeklyMealPlan(mondayStr));
     setGroceryList(getGroceryList());
     setFavouriteMeals(getFavouriteMeals());
   }, []);
 
   // Load week data when week changes
   useEffect(() => {
-    const plan = getOrCreateWeeklyMealPlan(currentWeekStart);
-    setWeeklyPlan(plan);
+    if (currentWeekStart) {
+      const plan = getOrCreateWeeklyMealPlan(currentWeekStart);
+      setWeeklyPlan(plan);
+    }
   }, [currentWeekStart]);
+  
+  // Show loading state during SSR
+  if (!weeklyPlan) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <Utensils className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
+          <p className="text-muted-foreground">Loading meal planner...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Save changes
   const handleSave = () => {
