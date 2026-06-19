@@ -36,10 +36,11 @@ export default function RoomsPage() {
   const [roomsProgress, setRoomsProgress] = useState<Record<string, { total: number; completed: number; percentage: number }>>({});
 
   useEffect(() => {
+    const today = new Date().toISOString().split("T")[0];
     const progress: Record<string, { total: number; completed: number; percentage: number }> = {};
     ROOMS.forEach(room => {
       const tasks = getRoomTasks(room.id);
-      const completed = tasks.filter(t => t.completed).length;
+      const completed = tasks.filter(t => t.lastCompleted === today).length;
       const total = tasks.length;
       const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
       progress[room.id] = { total, completed, percentage };
