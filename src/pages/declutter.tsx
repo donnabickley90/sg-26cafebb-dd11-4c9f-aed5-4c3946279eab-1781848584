@@ -28,8 +28,10 @@ import {
   resetDeclutterChallenge,
   getDeclutterProgress,
   getCurrentDeclutterDay,
+  toggleDeclutterItem,
   type DeclutterChallenge,
 } from "@/lib/storage";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function DeclutterPage() {
   const [challenge, setChallenge] = useState<DeclutterChallenge | null>(null);
@@ -94,6 +96,11 @@ export default function DeclutterPage() {
   const handleReset = () => {
     resetDeclutterChallenge();
     setStartDateValue("");
+    loadChallenge();
+  };
+
+  const handleToggleItem = (dayNumber: number, itemId: string) => {
+    toggleDeclutterItem(dayNumber, itemId);
     loadChallenge();
   };
 
@@ -271,6 +278,33 @@ export default function DeclutterPage() {
                           </p>
                         )}
                       </div>
+                    </div>
+
+                    {/* Individual Item Checkboxes */}
+                    <div className="pl-12 space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground mb-2">
+                        Items to declutter:
+                      </p>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                        {day.items.map((item, idx) => (
+                          <div key={item.id} className="flex items-center gap-2">
+                            <Checkbox
+                              id={`item-${dayNumber}-${idx}`}
+                              checked={item.checked}
+                              onCheckedChange={() => handleToggleItem(dayNumber, item.id)}
+                            />
+                            <label
+                              htmlFor={`item-${dayNumber}-${idx}`}
+                              className="text-sm cursor-pointer"
+                            >
+                              {idx + 1}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {day.items.filter(i => i.checked).length} of {day.items.length} items checked
+                      </p>
                     </div>
 
                     {/* Notes Section */}

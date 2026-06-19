@@ -152,6 +152,7 @@ export interface DeclutterChallenge {
   days: {
     [dayNumber: string]: { // "1", "2", ..., "30"
       completed: boolean;
+      items: Array<{ id: string; checked: boolean; label: string }>; // Individual items to declutter
       notes: string;
       completedDate?: string;
     };
@@ -723,18 +724,43 @@ export const getOrCreateDeclutterChallenge = (): DeclutterChallenge => {
   if (!isClient) {
     const days: DeclutterChallenge["days"] = {};
     for (let i = 1; i <= 30; i++) {
-      days[i.toString()] = { completed: false, notes: "" };
+      const items = Array.from({ length: i }, (_, idx) => ({
+        id: crypto.randomUUID(),
+        checked: false,
+        label: `Item ${idx + 1}`,
+      }));
+      days[i.toString()] = { completed: false, items, notes: "" };
     }
     return { days, totalItems: 0, createdAt: new Date().toISOString() };
   }
   
   const existing = getDeclutterChallenge();
-  if (existing) return existing;
+  if (existing) {
+    // Migrate old data to new format if items don't exist
+    Object.keys(existing.days).forEach(dayKey => {
+      const dayNumber = parseInt(dayKey);
+      if (!existing.days[dayKey].items || existing.days[dayKey].items.length === 0) {
+        existing.days[dayKey].items = Array.from({ length: dayNumber }, (_, idx) => ({
+          id: crypto.randomUUID(),
+          checked: false,
+          label: `Item ${idx + 1}`,
+        }));
+      }
+    });
+    saveDeclutterChallenge(existing);
+    return existing;
+  }
 
   const days: DeclutterChallenge["days"] = {};
   for (let i = 1; i <= 30; i++) {
+    const items = Array.from({ length: i }, (_, idx) => ({
+      id: crypto.randomUUID(),
+      checked: false,
+      label: `Item ${idx + 1}`,
+    }));
     days[i.toString()] = {
       completed: false,
+      items,
       notes: "",
     };
   }
@@ -749,16 +775,53 @@ export const getOrCreateDeclutterChallenge = (): DeclutterChallenge => {
   return newChallenge;
 };
 
+export const toggleDeclutterItem = (dayNumber: number, itemId: string): void => {
+  if (!isClient) return;
+  const challenge = getOrCreateDeclutterChallenge();
+  const dayKey = dayNumber.toString();
+  const day = challenge.days[dayKey];
+  
+  const item = day.items.find(i => i.id === itemId);
+  if (!item) return;
+  
+  // Toggle item
+  item.checked = !item.checked;
+  
+  // Update total items count
+  if (item.checked) {
+    challenge.totalItems += 1;
+  } else {
+    challenge.totalItems -= 1;
+  }
+  
+  // Auto-mark day complete if all items checked
+  const allChecked = day.items.every(i => i.checked);
+  if (allChecked && !day.completed) {
+    day.completed = true;
+    day.completedDate = new Date().toISOString().split("T")[0];
+  } else if (!allChecked && day.completed) {
+    day.completed = false;
+    day.completedDate = undefined;
+  }
+  
+  saveDeclutterChallenge(challenge);
+};
+
 export const markDeclutterDayComplete = (dayNumber: number, notes: string = ""): void => {
   if (!isClient) return;
   const challenge = getOrCreateDeclutterChallenge();
   const dayKey = dayNumber.toString();
+  const day = challenge.days[dayKey];
   
-  if (!challenge.days[dayKey].completed) {
-    challenge.days[dayKey].completed = true;
-    challenge.days[dayKey].notes = notes;
-    challenge.days[dayKey].completedDate = new Date().toISOString().split("T")[0];
-    challenge.totalItems += dayNumber; // Day 1 = 1 item, Day 2 = 2 items, etc.
+  if (!day.completed) {
+    // Mark all items as checked
+    const uncheckedCount = day.items.filter(i => !i.checked).length;
+    day.items.forEach(item => item.checked = true);
+    
+    day.completed = true;
+    day.notes = notes;
+    day.completedDate = new Date().toISOString().split("T")[0];
+    challenge.totalItems += uncheckedCount;
   }
   
   saveDeclutterChallenge(challenge);
@@ -768,11 +831,16 @@ export const markDeclutterDayIncomplete = (dayNumber: number): void => {
   if (!isClient) return;
   const challenge = getOrCreateDeclutterChallenge();
   const dayKey = dayNumber.toString();
+  const day = challenge.days[dayKey];
   
-  if (challenge.days[dayKey].completed) {
-    challenge.days[dayKey].completed = false;
-    challenge.days[dayKey].completedDate = undefined;
-    challenge.totalItems -= dayNumber; // Remove the items
+  if (day.completed) {
+    // Uncheck all items
+    const checkedCount = day.items.filter(i => i.checked).length;
+    day.items.forEach(item => item.checked = false);
+    
+    day.completed = false;
+    day.completedDate = undefined;
+    challenge.totalItems -= checkedCount;
   }
   
   saveDeclutterChallenge(challenge);
@@ -798,8 +866,14 @@ export const resetDeclutterChallenge = (): void => {
   if (!isClient) return;
   const days: DeclutterChallenge["days"] = {};
   for (let i = 1; i <= 30; i++) {
+    const items = Array.from({ length: i }, (_, idx) => ({
+      id: crypto.randomUUID(),
+      checked: false,
+      label: `Item ${idx + 1}`,
+    }));
     days[i.toString()] = {
       completed: false,
+      items,
       notes: "",
     };
   }
