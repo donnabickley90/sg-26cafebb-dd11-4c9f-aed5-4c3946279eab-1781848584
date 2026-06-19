@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { 
   Home, 
   Calendar, 
@@ -11,10 +12,18 @@ import {
   Trash2,
   Cake,
   BarChart3,
-  Settings
+  Settings,
+  Menu
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeSwitch } from "@/components/ThemeSwitch";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -22,6 +31,7 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const router = useRouter();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Generate today's date for the planner link
   const today = new Date().toISOString().split("T")[0];
@@ -110,7 +120,6 @@ export function Layout({ children }: LayoutProps) {
           <div className="flex items-center justify-around px-2 py-3">
             {navItems.slice(0, 5).map((item) => {
               const Icon = item.icon;
-              // Enhanced active state detection for routes with sub-pages
               const isActive = 
                 item.label === "Planner"
                   ? router.pathname.startsWith("/daily")
@@ -136,18 +145,57 @@ export function Layout({ children }: LayoutProps) {
                 </Link>
               );
             })}
-            <Link
-              href="/settings"
-              className={cn(
-                "flex flex-col items-center gap-1 px-3 py-2 rounded-2xl transition-all duration-200",
-                router.pathname === "/settings"
-                  ? "text-primary bg-primary/10 scale-110 font-semibold"
-                  : "text-sidebar-foreground hover:text-primary"
-              )}
-            >
-              <Settings className={cn("w-5 h-5", router.pathname === "/settings" && "drop-shadow-glow")} />
-              <span className="text-xs font-medium">More</span>
-            </Link>
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <button
+                  className={cn(
+                    "flex flex-col items-center gap-1 px-3 py-2 rounded-2xl transition-all duration-200",
+                    "text-sidebar-foreground hover:text-primary"
+                  )}
+                >
+                  <Menu className="w-5 h-5" />
+                  <span className="text-xs font-medium">More</span>
+                </button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="h-[80vh]">
+                <SheetHeader>
+                  <SheetTitle className="font-heading">All Sections</SheetTitle>
+                </SheetHeader>
+                <nav className="mt-6 space-y-2">
+                  {navItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = 
+                      item.label === "Planner"
+                        ? router.pathname.startsWith("/daily")
+                        : item.label === "Chores"
+                        ? router.pathname.startsWith("/cleaning")
+                        : item.label === "Deep Clean"
+                        ? router.pathname.startsWith("/deep-clean")
+                        : item.label === "Calendar"
+                        ? router.pathname.startsWith("/calendar")
+                        : router.pathname === item.href;
+                    
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 w-full",
+                          "hover:bg-sidebar-accent",
+                          isActive
+                            ? "bg-gradient-to-r from-primary/20 to-accent/20 text-primary shadow-lg border-l-4 border-primary font-semibold"
+                            : "text-sidebar-foreground"
+                        )}
+                      >
+                        <Icon className={cn("w-5 h-5", isActive && "animate-pulse")} />
+                        <span className="font-medium">{item.label}</span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </nav>
       </div>
