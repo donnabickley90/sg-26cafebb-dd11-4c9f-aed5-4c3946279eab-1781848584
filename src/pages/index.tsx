@@ -108,6 +108,12 @@ export default function Home() {
 
   // Pull-to-refresh handlers
   const handleTouchStart = (e: React.TouchEvent) => {
+    // Don't interfere with button/link clicks
+    const target = e.target as HTMLElement;
+    if (target.closest('button, a, input, textarea, select')) {
+      return;
+    }
+    
     if (containerRef.current && containerRef.current.scrollTop === 0) {
       touchStartY.current = e.touches[0].clientY;
     }
@@ -116,12 +122,23 @@ export default function Home() {
   const handleTouchMove = (e: React.TouchEvent) => {
     if (touchStartY.current === 0 || isRefreshing) return;
 
+    // Don't interfere with button/link interactions
+    const target = e.target as HTMLElement;
+    if (target.closest('button, a, input, textarea, select')) {
+      return;
+    }
+
     const touchY = e.touches[0].clientY;
     const distance = touchY - touchStartY.current;
 
     if (distance > 0 && containerRef.current && containerRef.current.scrollTop === 0) {
       setIsPulling(true);
       setPullDistance(Math.min(distance, 120)); // Max pull distance
+      
+      // Only prevent default when actually pulling to refresh
+      if (distance > 10) {
+        e.preventDefault();
+      }
     }
   };
 
