@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { ReactElement } from "react";
 import { ThemedCard, ThemedCardHeader, ThemedCardTitle, ThemedCardDescription, ThemedCardContent } from "@/components/ui/themed-card";
 import { ProgressRing } from "@/components/ui/progress-ring";
@@ -22,8 +22,7 @@ import {
   Moon,
   ListChecks,
   CalendarDays,
-  Home as HomeIcon,
-  RefreshCw
+  Home as HomeIcon
 } from "lucide-react";
 import { getTodaysMealsFromWeekly, getUpcomingImportantDates } from "@/lib/storage";
 import Link from "next/link";
@@ -44,13 +43,6 @@ export default function Home() {
     "mood",
     "notes",
   ]);
-
-  // Pull-to-refresh state
-  const [isPulling, setIsPulling] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [pullDistance, setPullDistance] = useState(0);
-  const touchStartY = useRef(0);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   // Mock data for demonstration
   const today = new Date();
@@ -105,62 +97,6 @@ export default function Home() {
 
     loadDashboardData();
   }, [loadDashboardData]);
-
-  // Pull-to-refresh handlers
-  const handleTouchStart = (e: React.TouchEvent) => {
-    // Don't interfere with button/link clicks
-    const target = e.target as HTMLElement;
-    if (target.closest('button, a, input, textarea, select')) {
-      return;
-    }
-    
-    if (containerRef.current && containerRef.current.scrollTop === 0) {
-      touchStartY.current = e.touches[0].clientY;
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (touchStartY.current === 0 || isRefreshing) return;
-
-    // Don't interfere with button/link interactions
-    const target = e.target as HTMLElement;
-    if (target.closest('button, a, input, textarea, select')) {
-      return;
-    }
-
-    const touchY = e.touches[0].clientY;
-    const distance = touchY - touchStartY.current;
-
-    if (distance > 0 && containerRef.current && containerRef.current.scrollTop === 0) {
-      setIsPulling(true);
-      setPullDistance(Math.min(distance, 120)); // Max pull distance
-      
-      // Only prevent default when actually pulling to refresh
-      if (distance > 10) {
-        e.preventDefault();
-      }
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (pullDistance > 80 && !isRefreshing) {
-      // Trigger refresh
-      setIsRefreshing(true);
-      setIsPulling(false);
-      
-      // Simulate refresh delay
-      setTimeout(() => {
-        loadDashboardData();
-        setIsRefreshing(false);
-        setPullDistance(0);
-      }, 1000);
-    } else {
-      setIsPulling(false);
-      setPullDistance(0);
-    }
-    
-    touchStartY.current = 0;
-  };
 
   const upcomingHours = [
     { time: "9:00 AM", task: "Morning routine & coffee", status: "done" },
@@ -481,34 +417,7 @@ export default function Home() {
   };
 
   return (
-    <div 
-      ref={containerRef}
-      className="space-y-10 pb-12 relative"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* Pull-to-refresh indicator */}
-      <div 
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center transition-all duration-300 pointer-events-none"
-        style={{
-          transform: `translateY(${isPulling ? pullDistance - 60 : isRefreshing ? 20 : -60}px)`,
-          opacity: isPulling || isRefreshing ? 1 : 0,
-        }}
-      >
-        <div className="bg-card/95 backdrop-blur-sm border border-border rounded-full px-6 py-3 shadow-lg flex items-center gap-3">
-          <RefreshCw 
-            className={`w-5 h-5 text-primary ${isRefreshing ? 'animate-spin' : ''}`}
-            style={{
-              transform: isPulling ? `rotate(${pullDistance * 3}deg)` : 'rotate(0deg)',
-            }}
-          />
-          <span className="text-sm font-medium">
-            {isRefreshing ? 'Refreshing...' : isPulling && pullDistance > 80 ? 'Release to refresh' : 'Pull to refresh'}
-          </span>
-        </div>
-      </div>
-
+    <div className="space-y-10 pb-12 relative">
       {/* Header with Date */}
       <div className="text-center space-y-4 border-b border-border pb-8">
         <div className="flex items-center justify-center gap-4">
