@@ -109,7 +109,7 @@ export function Layout({ children }: LayoutProps) {
 
         {/* Mobile Bottom Navigation */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-sidebar border-t border-sidebar-border z-50">
-          <div className="flex items-center justify-around px-1 py-2">
+          <div className="flex items-center justify-around px-2 py-3">
             {navItems.slice(0, 5).map((item) => {
               const Icon = item.icon;
               const isActive = 
@@ -124,14 +124,14 @@ export function Layout({ children }: LayoutProps) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl transition-all duration-200",
+                    "flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-xl transition-all duration-200 min-w-[60px]",
                     isActive
                       ? "text-primary bg-primary/10 scale-105 font-semibold"
-                      : "text-sidebar-foreground hover:text-primary"
+                      : "text-sidebar-foreground hover:text-primary active:scale-95"
                   )}
                 >
-                  <Icon className={cn("w-4 h-4", isActive && "drop-shadow-glow")} />
-                  <span className="text-[10px] font-medium">{item.label}</span>
+                  <Icon className={cn("w-6 h-6", isActive && "drop-shadow-glow")} />
+                  <span className="text-xs font-medium">{item.label}</span>
                 </Link>
               );
             })}
