@@ -184,30 +184,30 @@ export default function Home() {
   const widgetComponents: Record<string, ReactElement> = {
     "progress-summary": (
       <ThemedCard variant="primary" key="progress-summary">
-        <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2 text-xl sm:text-2xl">
-            <Star className="w-6 h-6 sm:w-7 sm:h-7" />
+        <ThemedCardHeader className="p-6 sm:p-6">
+          <ThemedCardTitle className="flex items-center gap-3 text-2xl sm:text-2xl">
+            <Star className="w-7 h-7 sm:w-7 sm:h-7" />
             Progress Summary
           </ThemedCardTitle>
         </ThemedCardHeader>
-        <ThemedCardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-6">
-            <div className="flex flex-col items-center space-y-4">
-              <ProgressRing progress={35} size={110} />
+        <ThemedCardContent className="p-6 sm:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 sm:gap-8">
+            <div className="flex flex-col items-center space-y-5">
+              <ProgressRing progress={35} size={130} />
               <div className="text-center">
-                <p className="text-base sm:text-sm font-medium">Daily Planner</p>
-                <p className="text-sm sm:text-xs text-muted-foreground">6/17 hours</p>
+                <p className="text-lg sm:text-base font-medium">Daily Planner</p>
+                <p className="text-base sm:text-sm text-muted-foreground">6/17 hours</p>
               </div>
             </div>
-            <div className="flex flex-col items-center space-y-4">
-              <div className="flex items-end gap-4">
+            <div className="flex flex-col items-center space-y-5">
+              <div className="flex items-end gap-6">
                 <div className="text-center">
-                  <div className="text-4xl sm:text-3xl font-bold text-primary">8</div>
-                  <p className="text-sm sm:text-xs text-muted-foreground">day streak</p>
+                  <div className="text-5xl sm:text-4xl font-bold text-primary">8</div>
+                  <p className="text-base sm:text-sm text-muted-foreground mt-1">day streak</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-4xl sm:text-3xl font-bold text-accent">12</div>
-                  <p className="text-sm sm:text-xs text-muted-foreground">week streak</p>
+                  <div className="text-5xl sm:text-4xl font-bold text-accent">12</div>
+                  <p className="text-base sm:text-sm text-muted-foreground mt-1">week streak</p>
                 </div>
               </div>
             </div>
@@ -217,23 +217,23 @@ export default function Home() {
     ),
     "schedule": (
       <ThemedCard variant="glow" key="schedule">
-        <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-            <Clock className="w-6 h-6 sm:w-5 sm:h-5 text-primary" />
+        <ThemedCardHeader className="p-6 sm:p-6">
+          <ThemedCardTitle className="flex items-center gap-3 text-xl sm:text-xl">
+            <Clock className="w-6 h-6 sm:w-6 sm:h-6 text-primary" />
             Today's Schedule
           </ThemedCardTitle>
-          <ThemedCardDescription className="text-sm sm:text-xs">Upcoming hourly blocks</ThemedCardDescription>
+          <ThemedCardDescription className="text-base sm:text-sm mt-1">Upcoming hourly blocks</ThemedCardDescription>
         </ThemedCardHeader>
-        <ThemedCardContent>
-          <div className="space-y-3">
+        <ThemedCardContent className="p-6 sm:p-6 pt-0 sm:pt-0">
+          <div className="space-y-4">
             {upcomingHours.map((hour, idx) => (
-              <div key={idx} className="flex items-center gap-3 p-3 sm:p-2 rounded-lg bg-muted/30">
-                <div className="text-base sm:text-sm font-medium text-muted-foreground min-w-[85px] sm:min-w-[80px]">
+              <div key={idx} className="flex items-center gap-4 p-4 sm:p-3 rounded-lg bg-muted/30">
+                <div className="text-lg sm:text-base font-medium text-muted-foreground min-w-[95px] sm:min-w-[85px]">
                   {hour.time}
                 </div>
-                <div className="flex-1 text-base sm:text-sm">{hour.task}</div>
-                {hour.status === "done" && <CheckCircle2 className="w-5 h-5 sm:w-4 sm:h-4 text-primary" />}
-                {hour.status === "current" && <div className="w-3 h-3 sm:w-2 sm:h-2 rounded-full bg-accent animate-pulse" />}
+                <div className="flex-1 text-lg sm:text-base">{hour.task}</div>
+                {hour.status === "done" && <CheckCircle2 className="w-6 h-6 sm:w-5 sm:h-5 text-primary flex-shrink-0" />}
+                {hour.status === "current" && <div className="w-3 h-3 sm:w-3 sm:h-3 rounded-full bg-accent animate-pulse flex-shrink-0" />}
               </div>
             ))}
           </div>
@@ -242,51 +242,51 @@ export default function Home() {
     ),
     "meals": (
       <ThemedCard variant="glow" key="meals">
-        <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-            <Utensils className="w-6 h-6 sm:w-5 sm:h-5 text-accent" />
+        <ThemedCardHeader className="p-6 sm:p-6">
+          <ThemedCardTitle className="flex items-center gap-3 text-xl sm:text-xl">
+            <Utensils className="w-6 h-6 sm:w-6 sm:h-6 text-accent" />
             Today's Meals
           </ThemedCardTitle>
-          <ThemedCardDescription className="text-sm sm:text-xs">What's on the menu</ThemedCardDescription>
+          <ThemedCardDescription className="text-base sm:text-sm mt-1">What's on the menu</ThemedCardDescription>
         </ThemedCardHeader>
-        <ThemedCardContent>
+        <ThemedCardContent className="p-6 sm:p-6 pt-0 sm:pt-0">
           {todaysMeals ? (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {todaysMeals.breakfast && (
-                <div className="flex items-center gap-3 p-3 sm:p-2 rounded-lg bg-muted/30">
-                  <Badge variant="outline" className="min-w-[100px] sm:min-w-[90px] text-sm sm:text-xs">Breakfast</Badge>
-                  <div className="text-base sm:text-sm">{todaysMeals.breakfast}</div>
+                <div className="flex items-center gap-4 p-4 sm:p-3 rounded-lg bg-muted/30">
+                  <Badge variant="outline" className="min-w-[110px] sm:min-w-[100px] text-base sm:text-sm py-1">Breakfast</Badge>
+                  <div className="text-lg sm:text-base">{todaysMeals.breakfast}</div>
                 </div>
               )}
               {todaysMeals.lunch && (
-                <div className="flex items-center gap-3 p-3 sm:p-2 rounded-lg bg-muted/30">
-                  <Badge variant="outline" className="min-w-[100px] sm:min-w-[90px] text-sm sm:text-xs">Lunch</Badge>
-                  <div className="text-base sm:text-sm">{todaysMeals.lunch}</div>
+                <div className="flex items-center gap-4 p-4 sm:p-3 rounded-lg bg-muted/30">
+                  <Badge variant="outline" className="min-w-[110px] sm:min-w-[100px] text-base sm:text-sm py-1">Lunch</Badge>
+                  <div className="text-lg sm:text-base">{todaysMeals.lunch}</div>
                 </div>
               )}
               {todaysMeals.dinner && (
-                <div className="flex items-center gap-3 p-3 sm:p-2 rounded-lg bg-muted/30">
-                  <Badge variant="outline" className="min-w-[100px] sm:min-w-[90px] text-sm sm:text-xs">Dinner</Badge>
-                  <div className="text-base sm:text-sm">{todaysMeals.dinner}</div>
+                <div className="flex items-center gap-4 p-4 sm:p-3 rounded-lg bg-muted/30">
+                  <Badge variant="outline" className="min-w-[110px] sm:min-w-[100px] text-base sm:text-sm py-1">Dinner</Badge>
+                  <div className="text-lg sm:text-base">{todaysMeals.dinner}</div>
                 </div>
               )}
               {todaysMeals.snacks && (
-                <div className="flex items-center gap-3 p-3 sm:p-2 rounded-lg bg-muted/30">
-                  <Badge variant="outline" className="min-w-[100px] sm:min-w-[90px] text-sm sm:text-xs">Snacks</Badge>
-                  <div className="text-base sm:text-sm">{todaysMeals.snacks}</div>
+                <div className="flex items-center gap-4 p-4 sm:p-3 rounded-lg bg-muted/30">
+                  <Badge variant="outline" className="min-w-[110px] sm:min-w-[100px] text-base sm:text-sm py-1">Snacks</Badge>
+                  <div className="text-lg sm:text-base">{todaysMeals.snacks}</div>
                 </div>
               )}
               {todaysMeals.drinks && (
-                <div className="flex items-center gap-3 p-3 sm:p-2 rounded-lg bg-muted/30">
-                  <Badge variant="outline" className="min-w-[100px] sm:min-w-[90px] text-sm sm:text-xs">Drinks</Badge>
-                  <div className="text-base sm:text-sm">{todaysMeals.drinks}</div>
+                <div className="flex items-center gap-4 p-4 sm:p-3 rounded-lg bg-muted/30">
+                  <Badge variant="outline" className="min-w-[110px] sm:min-w-[100px] text-base sm:text-sm py-1">Drinks</Badge>
+                  <div className="text-lg sm:text-base">{todaysMeals.drinks}</div>
                 </div>
               )}
               {!todaysMeals.breakfast && !todaysMeals.lunch && !todaysMeals.dinner && !todaysMeals.snacks && !todaysMeals.drinks && (
-                <div className="text-center py-6 sm:py-4">
-                  <p className="text-muted-foreground text-base sm:text-sm">No meals planned for today</p>
+                <div className="text-center py-8 sm:py-6">
+                  <p className="text-muted-foreground text-lg sm:text-base mb-4">No meals planned for today</p>
                   <Link href="/meals">
-                    <Button variant="outline" size="sm" className="mt-3 sm:mt-2">
+                    <Button variant="outline" size="default" className="text-base">
                       Plan Meals
                     </Button>
                   </Link>
@@ -294,10 +294,10 @@ export default function Home() {
               )}
             </div>
           ) : (
-            <div className="text-center py-6 sm:py-4">
-              <p className="text-muted-foreground text-base sm:text-sm">No meals planned for today</p>
+            <div className="text-center py-8 sm:py-6">
+              <p className="text-muted-foreground text-lg sm:text-base mb-4">No meals planned for today</p>
               <Link href="/meals">
-                <Button variant="outline" size="sm" className="mt-3 sm:mt-2">
+                <Button variant="outline" size="default" className="text-base">
                   Plan Meals
                 </Button>
               </Link>
@@ -308,37 +308,37 @@ export default function Home() {
     ),
     "birthdays": (
       <ThemedCard variant="glow" key="birthdays">
-        <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-            <Cake className="w-6 h-6 sm:w-5 sm:h-5 text-accent" />
+        <ThemedCardHeader className="p-6 sm:p-6">
+          <ThemedCardTitle className="flex items-center gap-3 text-xl sm:text-xl">
+            <Cake className="w-6 h-6 sm:w-6 sm:h-6 text-accent" />
             Upcoming Birthdays
           </ThemedCardTitle>
-          <ThemedCardDescription className="text-sm sm:text-xs">Don't forget to celebrate!</ThemedCardDescription>
+          <ThemedCardDescription className="text-base sm:text-sm mt-1">Don't forget to celebrate!</ThemedCardDescription>
         </ThemedCardHeader>
-        <ThemedCardContent>
+        <ThemedCardContent className="p-6 sm:p-6 pt-0 sm:pt-0">
           {upcomingBirthdays.length === 0 ? (
-            <div className="text-center py-6 sm:py-4">
-              <p className="text-muted-foreground text-base sm:text-sm">No upcoming birthdays or dates in the next 30 days</p>
+            <div className="text-center py-8 sm:py-6">
+              <p className="text-muted-foreground text-lg sm:text-base mb-4">No upcoming birthdays or dates in the next 30 days</p>
               <Link href="/birthdays">
-                <Button variant="outline" size="sm" className="mt-3 sm:mt-2">
+                <Button variant="outline" size="default" className="text-base">
                   Add Birthdays
                 </Button>
               </Link>
             </div>
           ) : (
-            <div className="space-y-3 sm:space-y-2">
+            <div className="space-y-4 sm:space-y-3">
               {upcomingBirthdays.slice(0, 3).map((birthday, idx) => (
-                <div key={idx} className="flex items-center justify-between p-3 sm:p-2 rounded-lg bg-muted/30">
-                  <div className="flex items-center gap-3 sm:gap-2">
-                    {birthday.category === "birthday" && <Cake className="w-5 h-5 sm:w-4 sm:h-4 text-primary" />}
-                    {birthday.category === "anniversary" && <Heart className="w-5 h-5 sm:w-4 sm:h-4 text-accent" />}
-                    {birthday.category === "holiday" && <Sparkles className="w-5 h-5 sm:w-4 sm:h-4 text-secondary" />}
+                <div key={idx} className="flex items-center justify-between p-4 sm:p-3 rounded-lg bg-muted/30">
+                  <div className="flex items-center gap-4 sm:gap-3">
+                    {birthday.category === "birthday" && <Cake className="w-6 h-6 sm:w-5 sm:h-5 text-primary flex-shrink-0" />}
+                    {birthday.category === "anniversary" && <Heart className="w-6 h-6 sm:w-5 sm:h-5 text-accent flex-shrink-0" />}
+                    {birthday.category === "holiday" && <Sparkles className="w-6 h-6 sm:w-5 sm:h-5 text-secondary flex-shrink-0" />}
                     <div>
-                      <p className="text-base sm:text-sm font-medium">{birthday.name}</p>
-                      <p className="text-sm sm:text-xs text-muted-foreground">{birthday.date}</p>
+                      <p className="text-lg sm:text-base font-medium">{birthday.name}</p>
+                      <p className="text-base sm:text-sm text-muted-foreground">{birthday.date}</p>
                     </div>
                   </div>
-                  <Badge variant="outline" className="text-sm sm:text-xs">
+                  <Badge variant="outline" className="text-base sm:text-sm py-1">
                     {birthday.daysUntil === 0 ? "Today!" : 
                      birthday.daysUntil === 1 ? "Tomorrow" : 
                      `${birthday.daysUntil} days`}
@@ -347,7 +347,7 @@ export default function Home() {
               ))}
               {upcomingBirthdays.length > 3 && (
                 <Link href="/birthdays">
-                  <Button variant="outline" size="sm" className="w-full mt-3 sm:mt-2">
+                  <Button variant="outline" size="default" className="w-full mt-4 text-base">
                     View All ({upcomingBirthdays.length})
                   </Button>
                 </Link>
@@ -359,32 +359,32 @@ export default function Home() {
     ),
     "dates": (
       <ThemedCard variant="glow" key="dates">
-        <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-            <Heart className="w-6 h-6 sm:w-5 sm:h-5 text-primary" />
+        <ThemedCardHeader className="p-6 sm:p-6">
+          <ThemedCardTitle className="flex items-center gap-3 text-xl sm:text-xl">
+            <Heart className="w-6 h-6 sm:w-6 sm:h-6 text-primary" />
             Important Dates
           </ThemedCardTitle>
-          <ThemedCardDescription className="text-sm sm:text-xs">Anniversaries & special events</ThemedCardDescription>
+          <ThemedCardDescription className="text-base sm:text-sm mt-1">Anniversaries & special events</ThemedCardDescription>
         </ThemedCardHeader>
-        <ThemedCardContent>
+        <ThemedCardContent className="p-6 sm:p-6 pt-0 sm:pt-0">
           {upcomingBirthdays.filter(b => b.category === "anniversary").length === 0 ? (
-            <div className="text-center py-6 sm:py-4">
-              <p className="text-muted-foreground text-base sm:text-sm">No upcoming anniversaries</p>
+            <div className="text-center py-8 sm:py-6">
+              <p className="text-muted-foreground text-lg sm:text-base mb-4">No upcoming anniversaries</p>
               <Link href="/birthdays">
-                <Button variant="outline" size="sm" className="mt-3 sm:mt-2">
+                <Button variant="outline" size="default" className="text-base">
                   Add Anniversaries
                 </Button>
               </Link>
             </div>
           ) : (
-            <div className="space-y-3 sm:space-y-2">
+            <div className="space-y-4 sm:space-y-3">
               {upcomingBirthdays.filter(b => b.category === "anniversary").slice(0, 2).map((date, idx) => (
-                <div key={idx} className="flex items-center justify-between p-3 sm:p-2 rounded-lg bg-muted/30">
+                <div key={idx} className="flex items-center justify-between p-4 sm:p-3 rounded-lg bg-muted/30">
                   <div>
-                    <p className="text-base sm:text-sm font-medium">{date.name}</p>
-                    <p className="text-sm sm:text-xs text-muted-foreground">{date.date}</p>
+                    <p className="text-lg sm:text-base font-medium">{date.name}</p>
+                    <p className="text-base sm:text-sm text-muted-foreground">{date.date}</p>
                   </div>
-                  <Badge variant="secondary" className="text-sm sm:text-xs">
+                  <Badge variant="secondary" className="text-base sm:text-sm py-1">
                     {date.daysUntil === 0 ? "Today!" : `${date.daysUntil} days`}
                   </Badge>
                 </div>
@@ -396,18 +396,18 @@ export default function Home() {
     ),
     "priorities": (
       <ThemedCard variant="glow" key="priorities">
-        <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-            <Star className="w-6 h-6 sm:w-5 sm:h-5 text-primary" />
+        <ThemedCardHeader className="p-6 sm:p-6">
+          <ThemedCardTitle className="flex items-center gap-3 text-xl sm:text-xl">
+            <Star className="w-6 h-6 sm:w-6 sm:h-6 text-primary" />
             Top 3 Priorities
           </ThemedCardTitle>
         </ThemedCardHeader>
-        <ThemedCardContent>
-          <div className="space-y-3 sm:space-y-2">
+        <ThemedCardContent className="p-6 sm:p-6 pt-0 sm:pt-0">
+          <div className="space-y-4 sm:space-y-3">
             {priorities.map((priority, idx) => (
-              <div key={idx} className="flex items-center gap-3 sm:gap-2 p-3 sm:p-2 rounded-lg bg-muted/30">
-                <input type="checkbox" checked={priority.done} readOnly className="w-5 h-5 sm:w-4 sm:h-4" />
-                <span className="text-base sm:text-sm flex-1">{priority.text}</span>
+              <div key={idx} className="flex items-center gap-4 sm:gap-3 p-4 sm:p-3 rounded-lg bg-muted/30">
+                <input type="checkbox" checked={priority.done} readOnly className="w-6 h-6 sm:w-5 sm:h-5 flex-shrink-0" />
+                <span className="text-lg sm:text-base flex-1">{priority.text}</span>
               </div>
             ))}
           </div>
@@ -416,22 +416,22 @@ export default function Home() {
     ),
     "mood": (
       <ThemedCard variant="glow" key="mood">
-        <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-            <Moon className="w-6 h-6 sm:w-5 sm:h-5 text-accent" />
+        <ThemedCardHeader className="p-6 sm:p-6">
+          <ThemedCardTitle className="flex items-center gap-3 text-xl sm:text-xl">
+            <Moon className="w-6 h-6 sm:w-6 sm:h-6 text-accent" />
             Mood & Energy
           </ThemedCardTitle>
         </ThemedCardHeader>
-        <ThemedCardContent>
-          <div className="space-y-5 sm:space-y-4">
+        <ThemedCardContent className="p-6 sm:p-6 pt-0 sm:pt-0">
+          <div className="space-y-6 sm:space-y-5">
             <div>
-              <p className="text-base sm:text-sm font-medium mb-3 sm:mb-2">Current Mood</p>
-              <div className="flex gap-3 sm:gap-2">
+              <p className="text-lg sm:text-base font-medium mb-4 sm:mb-3">Current Mood</p>
+              <div className="flex gap-3 sm:gap-3">
                 {moods.map((emoji, idx) => (
                   <button
                     key={idx}
                     onClick={() => setMood(emoji)}
-                    className={`text-3xl sm:text-2xl p-3 sm:p-2 rounded-lg transition-all ${
+                    className={`text-4xl sm:text-3xl p-4 sm:p-3 rounded-lg transition-all ${
                       mood === emoji ? "bg-primary/20 scale-110" : "bg-muted/30 hover:bg-muted/50"
                     }`}
                   >
@@ -441,13 +441,13 @@ export default function Home() {
               </div>
             </div>
             <div>
-              <div className="flex items-center justify-between mb-3 sm:mb-2">
-                <p className="text-base sm:text-sm font-medium">Spoons Today</p>
-                <div className="flex gap-2 sm:gap-1">
+              <div className="flex items-center justify-between mb-4 sm:mb-3">
+                <p className="text-lg sm:text-base font-medium">Spoons Today</p>
+                <div className="flex gap-3 sm:gap-2">
                   {[1, 2, 3, 4, 5].map((s) => (
                     <Zap
                       key={s}
-                      className={`w-6 h-6 sm:w-4 sm:h-4 cursor-pointer ${
+                      className={`w-7 h-7 sm:w-5 sm:h-5 cursor-pointer ${
                         s <= spoons ? "fill-accent text-accent" : "text-muted"
                       }`}
                       onClick={() => setSpoons(s)}
@@ -462,18 +462,18 @@ export default function Home() {
     ),
     "notes": (
       <ThemedCard variant="glow" key="notes">
-        <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-            <StickyNote className="w-6 h-6 sm:w-5 sm:h-5 text-primary" />
+        <ThemedCardHeader className="p-6 sm:p-6">
+          <ThemedCardTitle className="flex items-center gap-3 text-xl sm:text-xl">
+            <StickyNote className="w-6 h-6 sm:w-6 sm:h-6 text-primary" />
             Quick Notes
           </ThemedCardTitle>
         </ThemedCardHeader>
-        <ThemedCardContent>
+        <ThemedCardContent className="p-6 sm:p-6 pt-0 sm:pt-0">
           <Textarea
             placeholder="Jot down quick thoughts..."
             value={quickNote}
             onChange={(e) => setQuickNote(e.target.value)}
-            className="min-h-[120px] sm:min-h-[100px] resize-none text-base sm:text-sm"
+            className="min-h-[140px] sm:min-h-[120px] resize-none text-lg sm:text-base"
           />
         </ThemedCardContent>
       </ThemedCard>
@@ -483,7 +483,7 @@ export default function Home() {
   return (
     <div 
       ref={containerRef}
-      className="space-y-6 pb-8 relative"
+      className="space-y-10 pb-12 relative"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -510,59 +510,59 @@ export default function Home() {
       </div>
 
       {/* Header with Date */}
-      <div className="text-center space-y-2 sm:space-y-3 border-b border-border pb-4 sm:pb-6">
-        <div className="flex items-center justify-center gap-3 sm:gap-4">
-          <Moon className="w-7 h-7 sm:w-10 sm:h-10 text-primary" />
-          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-primary">
+      <div className="text-center space-y-4 border-b border-border pb-8">
+        <div className="flex items-center justify-center gap-4">
+          <Moon className="w-9 h-9 sm:w-10 sm:h-10 text-primary" />
+          <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold text-primary">
             Chaos Planner
           </h1>
-          <Sparkles className="w-7 h-7 sm:w-10 sm:h-10 text-accent" />
+          <Sparkles className="w-9 h-9 sm:w-10 sm:h-10 text-accent" />
         </div>
-        <div className="space-y-1">
-          <p className="text-2xl sm:text-3xl font-semibold text-foreground">{dayName}</p>
-          <p className="text-base sm:text-xl text-muted-foreground">{dateString}</p>
+        <div className="space-y-2">
+          <p className="text-3xl sm:text-4xl font-semibold text-foreground">{dayName}</p>
+          <p className="text-lg sm:text-xl text-muted-foreground">{dateString}</p>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="space-y-3 sm:space-y-4">
-        <h2 className="text-xl sm:text-2xl font-heading font-semibold text-foreground flex items-center gap-2">
-          <Zap className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
+      <div className="space-y-6">
+        <h2 className="text-2xl sm:text-3xl font-heading font-semibold text-foreground flex items-center gap-3">
+          <Zap className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
           Quick Actions
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <Link href={`/daily/${todayForPlanner}`}>
-            <Button variant="outline" className="h-auto py-4 sm:py-5 flex flex-col gap-2 sm:gap-3 w-full">
-              <Calendar className="w-6 h-6 sm:w-7 sm:h-7" />
-              <span className="text-sm sm:text-base font-medium">Today's Planner</span>
+            <Button variant="outline" className="h-auto py-6 sm:py-7 flex flex-col gap-3 w-full">
+              <Calendar className="w-8 h-8 sm:w-9 sm:h-9" />
+              <span className="text-base sm:text-lg font-medium">Today's Planner</span>
             </Button>
           </Link>
           <Link href="/meals">
-            <Button variant="outline" className="h-auto py-4 sm:py-5 flex flex-col gap-2 sm:gap-3 w-full">
-              <Utensils className="w-6 h-6 sm:w-7 sm:h-7" />
-              <span className="text-sm sm:text-base font-medium">Plan Meals</span>
+            <Button variant="outline" className="h-auto py-6 sm:py-7 flex flex-col gap-3 w-full">
+              <Utensils className="w-8 h-8 sm:w-9 sm:h-9" />
+              <span className="text-base sm:text-lg font-medium">Plan Meals</span>
             </Button>
           </Link>
           <Link href="/birthdays">
-            <Button variant="outline" className="h-auto py-4 sm:py-5 flex flex-col gap-2 sm:gap-3 w-full">
-              <Cake className="w-6 h-6 sm:w-7 sm:h-7" />
-              <span className="text-sm sm:text-base font-medium">Add Birthday</span>
+            <Button variant="outline" className="h-auto py-6 sm:py-7 flex flex-col gap-3 w-full">
+              <Cake className="w-8 h-8 sm:w-9 sm:h-9" />
+              <span className="text-base sm:text-lg font-medium">Add Birthday</span>
             </Button>
           </Link>
-          <Button variant="outline" className="h-auto py-4 sm:py-5 flex flex-col gap-2 sm:gap-3" onClick={() => {
+          <Button variant="outline" className="h-auto py-6 sm:py-7 flex flex-col gap-3" onClick={() => {
             const note = prompt("Enter your quick note:");
             if (note) {
               setQuickNote(note);
             }
           }}>
-            <StickyNote className="w-6 h-6 sm:w-7 sm:h-7" />
-            <span className="text-sm sm:text-base font-medium">Quick Note</span>
+            <StickyNote className="w-8 h-8 sm:w-9 sm:h-9" />
+            <span className="text-base sm:text-lg font-medium">Quick Note</span>
           </Button>
         </div>
       </div>
 
       {/* Dynamically ordered widgets */}
-      <div className="space-y-4 sm:space-y-6">
+      <div className="space-y-6">
         {widgetOrder.map((widgetKey) => {
           const widget = widgetComponents[widgetKey];
           if (!widget) return null;
@@ -576,14 +576,14 @@ export default function Home() {
         })}
         
         {/* Two-column grid section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {widgetOrder
             .filter(key => ["schedule", "meals", "birthdays", "dates"].includes(key))
             .map(key => widgetComponents[key])}
         </div>
         
         {/* Three-column grid section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {widgetOrder
             .filter(key => ["priorities", "mood", "notes"].includes(key))
             .map(key => widgetComponents[key])}
