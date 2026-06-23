@@ -185,29 +185,29 @@ export default function Home() {
     "progress-summary": (
       <ThemedCard variant="primary" key="progress-summary">
         <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2">
-            <Star className="w-5 h-5" />
+          <ThemedCardTitle className="flex items-center gap-2 text-xl sm:text-2xl">
+            <Star className="w-6 h-6 sm:w-7 sm:h-7" />
             Progress Summary
           </ThemedCardTitle>
         </ThemedCardHeader>
         <ThemedCardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="flex flex-col items-center space-y-3">
-              <ProgressRing progress={35} size={90} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-6">
+            <div className="flex flex-col items-center space-y-4">
+              <ProgressRing progress={35} size={110} />
               <div className="text-center">
-                <p className="text-sm font-medium">Daily Planner</p>
-                <p className="text-xs text-muted-foreground">6/17 hours</p>
+                <p className="text-base sm:text-sm font-medium">Daily Planner</p>
+                <p className="text-sm sm:text-xs text-muted-foreground">6/17 hours</p>
               </div>
             </div>
-            <div className="flex flex-col items-center space-y-3">
-              <div className="flex items-end gap-2">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="flex items-end gap-4">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-primary">8</div>
-                  <p className="text-xs text-muted-foreground">day streak</p>
+                  <div className="text-4xl sm:text-3xl font-bold text-primary">8</div>
+                  <p className="text-sm sm:text-xs text-muted-foreground">day streak</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-accent">12</div>
-                  <p className="text-xs text-muted-foreground">week streak</p>
+                  <div className="text-4xl sm:text-3xl font-bold text-accent">12</div>
+                  <p className="text-sm sm:text-xs text-muted-foreground">week streak</p>
                 </div>
               </div>
             </div>
@@ -218,22 +218,22 @@ export default function Home() {
     "schedule": (
       <ThemedCard variant="glow" key="schedule">
         <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2">
-            <Clock className="w-5 h-5 text-primary" />
+          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Clock className="w-6 h-6 sm:w-5 sm:h-5 text-primary" />
             Today's Schedule
           </ThemedCardTitle>
-          <ThemedCardDescription>Upcoming hourly blocks</ThemedCardDescription>
+          <ThemedCardDescription className="text-sm sm:text-xs">Upcoming hourly blocks</ThemedCardDescription>
         </ThemedCardHeader>
         <ThemedCardContent>
           <div className="space-y-3">
             {upcomingHours.map((hour, idx) => (
-              <div key={idx} className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                <div className="text-sm font-medium text-muted-foreground min-w-[80px]">
+              <div key={idx} className="flex items-center gap-3 p-3 sm:p-2 rounded-lg bg-muted/30">
+                <div className="text-base sm:text-sm font-medium text-muted-foreground min-w-[85px] sm:min-w-[80px]">
                   {hour.time}
                 </div>
-                <div className="flex-1 text-sm">{hour.task}</div>
-                {hour.status === "done" && <CheckCircle2 className="w-4 h-4 text-primary" />}
-                {hour.status === "current" && <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />}
+                <div className="flex-1 text-base sm:text-sm">{hour.task}</div>
+                {hour.status === "done" && <CheckCircle2 className="w-5 h-5 sm:w-4 sm:h-4 text-primary" />}
+                {hour.status === "current" && <div className="w-3 h-3 sm:w-2 sm:h-2 rounded-full bg-accent animate-pulse" />}
               </div>
             ))}
           </div>
@@ -243,50 +243,50 @@ export default function Home() {
     "meals": (
       <ThemedCard variant="glow" key="meals">
         <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2">
-            <Utensils className="w-5 h-5 text-accent" />
+          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Utensils className="w-6 h-6 sm:w-5 sm:h-5 text-accent" />
             Today's Meals
           </ThemedCardTitle>
-          <ThemedCardDescription>What's on the menu</ThemedCardDescription>
+          <ThemedCardDescription className="text-sm sm:text-xs">What's on the menu</ThemedCardDescription>
         </ThemedCardHeader>
         <ThemedCardContent>
           {todaysMeals ? (
             <div className="space-y-3">
               {todaysMeals.breakfast && (
-                <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                  <Badge variant="outline" className="min-w-[90px]">Breakfast</Badge>
-                  <div className="text-sm">{todaysMeals.breakfast}</div>
+                <div className="flex items-center gap-3 p-3 sm:p-2 rounded-lg bg-muted/30">
+                  <Badge variant="outline" className="min-w-[100px] sm:min-w-[90px] text-sm sm:text-xs">Breakfast</Badge>
+                  <div className="text-base sm:text-sm">{todaysMeals.breakfast}</div>
                 </div>
               )}
               {todaysMeals.lunch && (
-                <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                  <Badge variant="outline" className="min-w-[90px]">Lunch</Badge>
-                  <div className="text-sm">{todaysMeals.lunch}</div>
+                <div className="flex items-center gap-3 p-3 sm:p-2 rounded-lg bg-muted/30">
+                  <Badge variant="outline" className="min-w-[100px] sm:min-w-[90px] text-sm sm:text-xs">Lunch</Badge>
+                  <div className="text-base sm:text-sm">{todaysMeals.lunch}</div>
                 </div>
               )}
               {todaysMeals.dinner && (
-                <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                  <Badge variant="outline" className="min-w-[90px]">Dinner</Badge>
-                  <div className="text-sm">{todaysMeals.dinner}</div>
+                <div className="flex items-center gap-3 p-3 sm:p-2 rounded-lg bg-muted/30">
+                  <Badge variant="outline" className="min-w-[100px] sm:min-w-[90px] text-sm sm:text-xs">Dinner</Badge>
+                  <div className="text-base sm:text-sm">{todaysMeals.dinner}</div>
                 </div>
               )}
               {todaysMeals.snacks && (
-                <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                  <Badge variant="outline" className="min-w-[90px]">Snacks</Badge>
-                  <div className="text-sm">{todaysMeals.snacks}</div>
+                <div className="flex items-center gap-3 p-3 sm:p-2 rounded-lg bg-muted/30">
+                  <Badge variant="outline" className="min-w-[100px] sm:min-w-[90px] text-sm sm:text-xs">Snacks</Badge>
+                  <div className="text-base sm:text-sm">{todaysMeals.snacks}</div>
                 </div>
               )}
               {todaysMeals.drinks && (
-                <div className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
-                  <Badge variant="outline" className="min-w-[90px]">Drinks</Badge>
-                  <div className="text-sm">{todaysMeals.drinks}</div>
+                <div className="flex items-center gap-3 p-3 sm:p-2 rounded-lg bg-muted/30">
+                  <Badge variant="outline" className="min-w-[100px] sm:min-w-[90px] text-sm sm:text-xs">Drinks</Badge>
+                  <div className="text-base sm:text-sm">{todaysMeals.drinks}</div>
                 </div>
               )}
               {!todaysMeals.breakfast && !todaysMeals.lunch && !todaysMeals.dinner && !todaysMeals.snacks && !todaysMeals.drinks && (
-                <div className="text-center py-4">
-                  <p className="text-muted-foreground text-sm">No meals planned for today</p>
+                <div className="text-center py-6 sm:py-4">
+                  <p className="text-muted-foreground text-base sm:text-sm">No meals planned for today</p>
                   <Link href="/meals">
-                    <Button variant="outline" size="sm" className="mt-2">
+                    <Button variant="outline" size="sm" className="mt-3 sm:mt-2">
                       Plan Meals
                     </Button>
                   </Link>
@@ -294,10 +294,10 @@ export default function Home() {
               )}
             </div>
           ) : (
-            <div className="text-center py-4">
-              <p className="text-muted-foreground text-sm">No meals planned for today</p>
+            <div className="text-center py-6 sm:py-4">
+              <p className="text-muted-foreground text-base sm:text-sm">No meals planned for today</p>
               <Link href="/meals">
-                <Button variant="outline" size="sm" className="mt-2">
+                <Button variant="outline" size="sm" className="mt-3 sm:mt-2">
                   Plan Meals
                 </Button>
               </Link>
@@ -309,36 +309,36 @@ export default function Home() {
     "birthdays": (
       <ThemedCard variant="glow" key="birthdays">
         <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2">
-            <Cake className="w-5 h-5 text-accent" />
+          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Cake className="w-6 h-6 sm:w-5 sm:h-5 text-accent" />
             Upcoming Birthdays
           </ThemedCardTitle>
-          <ThemedCardDescription>Don't forget to celebrate!</ThemedCardDescription>
+          <ThemedCardDescription className="text-sm sm:text-xs">Don't forget to celebrate!</ThemedCardDescription>
         </ThemedCardHeader>
         <ThemedCardContent>
           {upcomingBirthdays.length === 0 ? (
-            <div className="text-center py-4">
-              <p className="text-muted-foreground text-sm">No upcoming birthdays or dates in the next 30 days</p>
+            <div className="text-center py-6 sm:py-4">
+              <p className="text-muted-foreground text-base sm:text-sm">No upcoming birthdays or dates in the next 30 days</p>
               <Link href="/birthdays">
-                <Button variant="outline" size="sm" className="mt-2">
+                <Button variant="outline" size="sm" className="mt-3 sm:mt-2">
                   Add Birthdays
                 </Button>
               </Link>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3 sm:space-y-2">
               {upcomingBirthdays.slice(0, 3).map((birthday, idx) => (
-                <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
-                  <div className="flex items-center gap-2">
-                    {birthday.category === "birthday" && <Cake className="w-4 h-4 text-primary" />}
-                    {birthday.category === "anniversary" && <Heart className="w-4 h-4 text-accent" />}
-                    {birthday.category === "holiday" && <Sparkles className="w-4 h-4 text-secondary" />}
+                <div key={idx} className="flex items-center justify-between p-3 sm:p-2 rounded-lg bg-muted/30">
+                  <div className="flex items-center gap-3 sm:gap-2">
+                    {birthday.category === "birthday" && <Cake className="w-5 h-5 sm:w-4 sm:h-4 text-primary" />}
+                    {birthday.category === "anniversary" && <Heart className="w-5 h-5 sm:w-4 sm:h-4 text-accent" />}
+                    {birthday.category === "holiday" && <Sparkles className="w-5 h-5 sm:w-4 sm:h-4 text-secondary" />}
                     <div>
-                      <p className="text-sm font-medium">{birthday.name}</p>
-                      <p className="text-xs text-muted-foreground">{birthday.date}</p>
+                      <p className="text-base sm:text-sm font-medium">{birthday.name}</p>
+                      <p className="text-sm sm:text-xs text-muted-foreground">{birthday.date}</p>
                     </div>
                   </div>
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="text-sm sm:text-xs">
                     {birthday.daysUntil === 0 ? "Today!" : 
                      birthday.daysUntil === 1 ? "Tomorrow" : 
                      `${birthday.daysUntil} days`}
@@ -347,7 +347,7 @@ export default function Home() {
               ))}
               {upcomingBirthdays.length > 3 && (
                 <Link href="/birthdays">
-                  <Button variant="outline" size="sm" className="w-full mt-2">
+                  <Button variant="outline" size="sm" className="w-full mt-3 sm:mt-2">
                     View All ({upcomingBirthdays.length})
                   </Button>
                 </Link>
@@ -360,31 +360,31 @@ export default function Home() {
     "dates": (
       <ThemedCard variant="glow" key="dates">
         <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2">
-            <Heart className="w-5 h-5 text-primary" />
+          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Heart className="w-6 h-6 sm:w-5 sm:h-5 text-primary" />
             Important Dates
           </ThemedCardTitle>
-          <ThemedCardDescription>Anniversaries & special events</ThemedCardDescription>
+          <ThemedCardDescription className="text-sm sm:text-xs">Anniversaries & special events</ThemedCardDescription>
         </ThemedCardHeader>
         <ThemedCardContent>
           {upcomingBirthdays.filter(b => b.category === "anniversary").length === 0 ? (
-            <div className="text-center py-4">
-              <p className="text-muted-foreground text-sm">No upcoming anniversaries</p>
+            <div className="text-center py-6 sm:py-4">
+              <p className="text-muted-foreground text-base sm:text-sm">No upcoming anniversaries</p>
               <Link href="/birthdays">
-                <Button variant="outline" size="sm" className="mt-2">
+                <Button variant="outline" size="sm" className="mt-3 sm:mt-2">
                   Add Anniversaries
                 </Button>
               </Link>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3 sm:space-y-2">
               {upcomingBirthdays.filter(b => b.category === "anniversary").slice(0, 2).map((date, idx) => (
-                <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
+                <div key={idx} className="flex items-center justify-between p-3 sm:p-2 rounded-lg bg-muted/30">
                   <div>
-                    <p className="text-sm font-medium">{date.name}</p>
-                    <p className="text-xs text-muted-foreground">{date.date}</p>
+                    <p className="text-base sm:text-sm font-medium">{date.name}</p>
+                    <p className="text-sm sm:text-xs text-muted-foreground">{date.date}</p>
                   </div>
-                  <Badge variant="secondary">
+                  <Badge variant="secondary" className="text-sm sm:text-xs">
                     {date.daysUntil === 0 ? "Today!" : `${date.daysUntil} days`}
                   </Badge>
                 </div>
@@ -397,17 +397,17 @@ export default function Home() {
     "priorities": (
       <ThemedCard variant="glow" key="priorities">
         <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2">
-            <Star className="w-5 h-5 text-primary" />
+          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Star className="w-6 h-6 sm:w-5 sm:h-5 text-primary" />
             Top 3 Priorities
           </ThemedCardTitle>
         </ThemedCardHeader>
         <ThemedCardContent>
-          <div className="space-y-2">
+          <div className="space-y-3 sm:space-y-2">
             {priorities.map((priority, idx) => (
-              <div key={idx} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30">
-                <input type="checkbox" checked={priority.done} readOnly className="w-4 h-4" />
-                <span className="text-sm flex-1">{priority.text}</span>
+              <div key={idx} className="flex items-center gap-3 sm:gap-2 p-3 sm:p-2 rounded-lg bg-muted/30">
+                <input type="checkbox" checked={priority.done} readOnly className="w-5 h-5 sm:w-4 sm:h-4" />
+                <span className="text-base sm:text-sm flex-1">{priority.text}</span>
               </div>
             ))}
           </div>
@@ -417,21 +417,21 @@ export default function Home() {
     "mood": (
       <ThemedCard variant="glow" key="mood">
         <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2">
-            <Moon className="w-5 h-5 text-accent" />
+          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Moon className="w-6 h-6 sm:w-5 sm:h-5 text-accent" />
             Mood & Energy
           </ThemedCardTitle>
         </ThemedCardHeader>
         <ThemedCardContent>
-          <div className="space-y-4">
+          <div className="space-y-5 sm:space-y-4">
             <div>
-              <p className="text-sm font-medium mb-2">Current Mood</p>
-              <div className="flex gap-2">
+              <p className="text-base sm:text-sm font-medium mb-3 sm:mb-2">Current Mood</p>
+              <div className="flex gap-3 sm:gap-2">
                 {moods.map((emoji, idx) => (
                   <button
                     key={idx}
                     onClick={() => setMood(emoji)}
-                    className={`text-2xl p-2 rounded-lg transition-all ${
+                    className={`text-3xl sm:text-2xl p-3 sm:p-2 rounded-lg transition-all ${
                       mood === emoji ? "bg-primary/20 scale-110" : "bg-muted/30 hover:bg-muted/50"
                     }`}
                   >
@@ -441,13 +441,13 @@ export default function Home() {
               </div>
             </div>
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-medium">Spoons Today</p>
-                <div className="flex gap-1">
+              <div className="flex items-center justify-between mb-3 sm:mb-2">
+                <p className="text-base sm:text-sm font-medium">Spoons Today</p>
+                <div className="flex gap-2 sm:gap-1">
                   {[1, 2, 3, 4, 5].map((s) => (
                     <Zap
                       key={s}
-                      className={`w-4 h-4 cursor-pointer ${
+                      className={`w-6 h-6 sm:w-4 sm:h-4 cursor-pointer ${
                         s <= spoons ? "fill-accent text-accent" : "text-muted"
                       }`}
                       onClick={() => setSpoons(s)}
@@ -463,8 +463,8 @@ export default function Home() {
     "notes": (
       <ThemedCard variant="glow" key="notes">
         <ThemedCardHeader>
-          <ThemedCardTitle className="flex items-center gap-2">
-            <StickyNote className="w-5 h-5 text-primary" />
+          <ThemedCardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <StickyNote className="w-6 h-6 sm:w-5 sm:h-5 text-primary" />
             Quick Notes
           </ThemedCardTitle>
         </ThemedCardHeader>
@@ -473,7 +473,7 @@ export default function Home() {
             placeholder="Jot down quick thoughts..."
             value={quickNote}
             onChange={(e) => setQuickNote(e.target.value)}
-            className="min-h-[100px] resize-none"
+            className="min-h-[120px] sm:min-h-[100px] resize-none text-base sm:text-sm"
           />
         </ThemedCardContent>
       </ThemedCard>
